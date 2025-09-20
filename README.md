@@ -12,3 +12,5 @@ Ngô Hoàng Khánh Duy - 23BI14131
 Phùng Đỗ Việt Dũng -23BI14112
 
 Phan Sỹ Long - BI11-161
+
+Trần Hữu Duy - 22BA13103
