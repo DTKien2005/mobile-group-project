@@ -1,77 +1,56 @@
 package com.example.covid19app
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.covid19app.ui.theme.Covid19AppTheme
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import com.example.covid19app.features.vndashboard.ui.view.VnDashboardActivity
 
 private const val TAG = "MainActivity"
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate(Bundle?) called")
-        enableEdgeToEdge()
-        setContent {
-            Covid19AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        Log.d(TAG, "onCreate called")
+
+        // Attach layout XML
+        setContentView(R.layout.main_activity)
+
+        // Create a button to open the dashboard
+        val dashboardButton: Button = findViewById(R.id.covid_dashboard_button)
+
+        // Event when u click the button
+        dashboardButton.setOnClickListener {
+            val intent = Intent(this, VnDashboardActivity::class.java)
+            startActivity(intent)
+            Log.d(TAG, "Dashboard button")
         }
     }
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart() called")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause() called")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop() called")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy() called")
+        Log.d(TAG, "onStart called")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume() called")
+        Log.d(TAG, "onResume called")
     }
 
-}
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause called")
+    }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop called")
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Covid19AppTheme {
-        Greeting("Android")
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy called")
     }
 }
