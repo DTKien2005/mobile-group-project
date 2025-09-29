@@ -28,6 +28,8 @@
         <activity
             android:name=".features.vndashboard.ui.view.VnDashboardActivity"
             android:exported="false" />
+        <activity android:name=".D30Activity"
+            android:exported="false"/>
     </application>
 
 </manifest>
