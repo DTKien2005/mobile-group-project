@@ -1,10 +1,15 @@
 package com.example.covid19app
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.widget.Button
+import com.example.covid19app.features.vndashboard.ui.view.VnDashboardActivity
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,6 +38,15 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+
+        // Create a button to open the dashboard
+        val dashboardButton: Button = findViewById(R.id.covid_dashboard_button)
+
+        // Event when u click the button
+        dashboardButton.setOnClickListener {
+            val intent = Intent(this, VnDashboardActivity::class.java)
+            startActivity(intent)
+            Log.d(TAG, "Dashboard button")
         }
     }
 
