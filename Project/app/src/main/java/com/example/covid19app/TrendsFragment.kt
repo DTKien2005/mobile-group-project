@@ -111,44 +111,52 @@ class TrendsFragment : Fragment() {
     }
 
     private fun showChart(cases: Map<String, Int>) {
-        val inputFormat = SimpleDateFormat("M/d/yy", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+        // Offload chart data processing to a background thread
+        Thread {
+            val inputFormat = SimpleDateFormat("M/d/yy", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
 
-        val sorted = cases.entries.sortedBy { inputFormat.parse(it.key) }
+            // Sort data in the background
+            val sorted = cases.entries.sortedBy { inputFormat.parse(it.key) }
 
-        val labels = sorted.map { entry ->
-            runCatching { outputFormat.format(inputFormat.parse(entry.key)!!) }
-                .getOrElse { entry.key }
-        }
-
-        val entries = sorted.mapIndexed { index, entry -> Entry(index.toFloat(), entry.value.toFloat()) }
-
-        lineChart.apply {
-            data = LineData(LineDataSet(entries, "Ca nhiễm (30 ngày)").apply {
-                color = Color.BLUE
-                lineWidth = 2f
-                setDrawCircles(false)
-                setDrawValues(false)
-            })
-
-            xAxis.apply {
-                valueFormatter = IndexAxisValueFormatter(labels)
-                position = XAxis.XAxisPosition.BOTTOM
-                granularity = 5f
-                setLabelCount(6, true)
+            val labels = sorted.map { entry ->
+                runCatching { outputFormat.format(inputFormat.parse(entry.key)!!) }
+                    .getOrElse { entry.key }
             }
 
-            axisLeft.apply {
-                axisMinimum = 0f
-                granularity = 1000f
-                setLabelCount(6, true)
+            val entries = sorted.mapIndexed { index, entry ->
+                Entry(index.toFloat(), entry.value.toFloat())
             }
 
-            axisRight.isEnabled = false
-            description.isEnabled = false
-            legend.isEnabled = false
+            // Check if the fragment is still attached before updating the UI
+            requireActivity().runOnUiThread {
+                if (isAdded) {
+                    lineChart.apply {
+                        data = LineData(LineDataSet(entries, "Ca nhiễm (30 ngày)").apply {
+                            color = Color.BLUE
+                            lineWidth = 2f
+                            setDrawCircles(false)
+                            setDrawValues(false)
+                        })
+                        xAxis.apply {
+                            valueFormatter = IndexAxisValueFormatter(labels)
+                            position = XAxis.XAxisPosition.BOTTOM
+                            granularity = 5f
+                            setLabelCount(6, true)
+                        }
+                        axisLeft.apply {
+                            axisMinimum = 0f
+                            granularity = 1000f
+                            setLabelCount(6, true)
+                        }
+                        axisRight.isEnabled = false
+                        description.isEnabled = false
+                        legend.isEnabled = false
 
-            invalidate()
-        }
+                        invalidate()
+                    }
+                }
+            }
+        }.start() // Start the background thread
     }
 }

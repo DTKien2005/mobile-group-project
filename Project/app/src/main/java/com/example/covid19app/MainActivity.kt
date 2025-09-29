@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.widget.Button
 import com.example.covid19app.features.vndashboard.ui.view.VnDashboardActivity
+import com.example.covid19app.SymptomCheckerFragment
+import com.example.covid19app.TrendsFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,13 +34,15 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(TrendsFragment())
                     true
                 }
+
                 R.id.nav_symptom -> {
                     loadFragment(SymptomCheckerFragment())
                     true
                 }
+
                 else -> false
             }
-
+        }
         // Create a button to open the dashboard
         val dashboardButton: Button = findViewById(R.id.covid_dashboard_button)
 
