@@ -1,11 +1,14 @@
 package com.example.covid19app
 
+import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -19,74 +22,70 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class TrendsFragment : Fragment() {
-
     private lateinit var lineChart: LineChart
+    private lateinit var tvResult: TextView
     private val TAG = "TrendsFragment"
 
-    override fun onAttach(context: android.content.Context) {
-        super.onAttach(context)
-        Log.d(TAG, "onAttach")
-    }
+    private var allCases: Map<String, Int>? = null
+    private var sortedDateList: List<Pair<Long, Int>> = emptyList()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
-    }
+    private val inputFormat = SimpleDateFormat("M/d/yy", Locale.ENGLISH)
+    private val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d(TAG, "onCreateView")
         val root = inflater.inflate(R.layout.activity_trends, container, false)
         lineChart = root.findViewById(R.id.lineChart)
+        tvResult = root.findViewById(R.id.tvResult)
+
+        val btnPickDate: Button = root.findViewById(R.id.btnPickDate)
+        btnPickDate.setOnClickListener { showDatePicker() }
 
         fetchCovidData()
-
         return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated")
-    }
+    private fun showDatePicker() {
+        val c = Calendar.getInstance()
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                val selCal = Calendar.getInstance().apply {
+                    set(year, month, dayOfMonth, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                val selMillis = selCal.timeInMillis
 
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart")
-    }
+                var nearest = sortedDateList.lastOrNull { it.first <= selMillis }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume")
-    }
+                if (nearest == null) {
+                    nearest = sortedDateList.firstOrNull { it.first >= selMillis }
+                }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause")
-    }
+                if (nearest == null) {
+                    tvResult.text = "Không có dữ liệu nào để hiển thị"
+                    return@DatePickerDialog
+                }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop")
-    }
+                val prev = sortedDateList.lastOrNull { it.first < nearest.first }
+                val prevVal = prev?.second ?: 0
+                val diff = nearest.second - prevVal
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(TAG, "onDestroyView")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d(TAG, "onDetach")
+                val nearestDate = outputFormat.format(Date(nearest.first))
+                tvResult.text = "Kết quả gần nhất (${nearestDate}): $diff ca nhiễm mới"
+            },
+            c.get(Calendar.YEAR),
+            c.get(Calendar.MONTH),
+            c.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     private fun fetchCovidData() {
@@ -101,7 +100,9 @@ class TrendsFragment : Fragment() {
                     call: Call<HistoricalResponse>,
                     response: Response<HistoricalResponse>
                 ) {
-                    response.body()?.timeline?.cases?.let { showChart(it) }
+                    allCases = response.body()?.timeline?.cases
+                    buildSortedDateList()
+                    showChart()
                 }
 
                 override fun onFailure(call: Call<HistoricalResponse>, t: Throwable) {
@@ -110,44 +111,66 @@ class TrendsFragment : Fragment() {
             })
     }
 
-    private fun showChart(cases: Map<String, Int>) {
-        val inputFormat = SimpleDateFormat("M/d/yy", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+    private fun buildSortedDateList() {
+        val tmp = mutableListOf<Pair<Long, Int>>()
+        allCases?.forEach { (k, v) ->
+            val d = runCatching { inputFormat.parse(k) }.getOrNull()
+            if (d != null) {
+                val cal = Calendar.getInstance().apply {
+                    time = d
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                tmp.add(Pair(cal.timeInMillis, v))
+            } else {
+                Log.e(TAG, "Parse fail for key=$k")
+            }
+        }
+        tmp.sortBy { it.first }
+        sortedDateList = tmp
+    }
 
-        val sorted = cases.entries.sortedBy { inputFormat.parse(it.key) }
+    private fun showChart() {
+        if (sortedDateList.size < 2) return
 
-        val labels = sorted.map { entry ->
-            runCatching { outputFormat.format(inputFormat.parse(entry.key)!!) }
-                .getOrElse { entry.key }
+        val dailyCases = mutableListOf<Pair<Long, Int>>()
+        for (i in 1 until sortedDateList.size) {
+            val today = sortedDateList[i]
+            val yesterday = sortedDateList[i - 1]
+            val diff = (today.second - yesterday.second).coerceAtLeast(0)
+            dailyCases.add(Pair(today.first, diff))
         }
 
-        val entries = sorted.mapIndexed { index, entry -> Entry(index.toFloat(), entry.value.toFloat()) }
+        val labels = dailyCases.map { outputFormat.format(Date(it.first)) }
+        val entries = dailyCases.mapIndexed { index, entry ->
+            Entry(index.toFloat(), entry.second.toFloat())
+        }
 
         lineChart.apply {
-            data = LineData(LineDataSet(entries, "Ca nhiễm (30 ngày)").apply {
-                color = Color.BLUE
-                lineWidth = 2f
-                setDrawCircles(false)
-                setDrawValues(false)
-            })
-
+            data = LineData(
+                LineDataSet(entries, "Ca nhiễm mới").apply {
+                    color = Color.BLUE
+                    lineWidth = 2f
+                    setDrawCircles(false)
+                    setDrawValues(false)
+                }
+            )
             xAxis.apply {
                 valueFormatter = IndexAxisValueFormatter(labels)
                 position = XAxis.XAxisPosition.BOTTOM
-                granularity = 5f
-                setLabelCount(6, true)
+                setDrawLabels(false) // ẩn nhãn X cho gọn
+                setDrawGridLines(false)
             }
-
             axisLeft.apply {
                 axisMinimum = 0f
-                granularity = 1000f
-                setLabelCount(6, true)
+                setDrawLabels(false)
+                setDrawGridLines(true)
             }
-
             axisRight.isEnabled = false
             description.isEnabled = false
             legend.isEnabled = false
-
             invalidate()
         }
     }
