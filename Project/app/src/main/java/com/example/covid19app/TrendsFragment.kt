@@ -27,9 +27,12 @@ import java.util.Date
 import java.util.Locale
 
 class TrendsFragment : Fragment() {
-    private lateinit var lineChart: LineChart
-    private lateinit var tvResult: TextView
     private val TAG = "TrendsFragment"
+    
+    private var lineChart: LineChart? = null
+    private var tvResult: TextView? = null
+
+    private var currentCall: Call<HistoricalResponse>? = null
 
     private var allCases: Map<String, Int>? = null
     private var sortedDateList: List<Pair<Long, Int>> = emptyList()
@@ -53,6 +56,16 @@ class TrendsFragment : Fragment() {
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        currentCall?.cancel()
+        currentCall = null
+
+        lineChart = null
+        tvResult = null
+    }
+
     private fun showDatePicker() {
         val c = Calendar.getInstance()
         DatePickerDialog(
@@ -64,6 +77,11 @@ class TrendsFragment : Fragment() {
                 }
                 val selMillis = selCal.timeInMillis
 
+                if (sortedDateList.isEmpty()) {
+                    tvResult?.text = "Chưa có dữ liệu để tra cứu"
+                    return@DatePickerDialog
+                }
+
                 var nearest = sortedDateList.lastOrNull { it.first <= selMillis }
 
                 if (nearest == null) {
@@ -71,16 +89,16 @@ class TrendsFragment : Fragment() {
                 }
 
                 if (nearest == null) {
-                    tvResult.text = "Không có dữ liệu nào để hiển thị"
+                    tvResult?.text = "Không có dữ liệu nào để hiển thị"
                     return@DatePickerDialog
                 }
 
                 val prev = sortedDateList.lastOrNull { it.first < nearest.first }
                 val prevVal = prev?.second ?: 0
-                val diff = nearest.second - prevVal
+                val diff = (nearest.second - prevVal).coerceAtLeast(0)
 
                 val nearestDate = outputFormat.format(Date(nearest.first))
-                tvResult.text = "Kết quả gần nhất (${nearestDate}): $diff ca nhiễm mới"
+                tvResult?.text = "Kết quả gần nhất ($nearestDate): $diff ca nhiễm mới"
             },
             c.get(Calendar.YEAR),
             c.get(Calendar.MONTH),
@@ -89,26 +107,37 @@ class TrendsFragment : Fragment() {
     }
 
     private fun fetchCovidData() {
-        Retrofit.Builder()
+        val retrofit = Retrofit.Builder()
             .baseUrl("https://disease.sh/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(CovidApiService::class.java)
-            .getVietnamTrends()
-            .enqueue(object : Callback<HistoricalResponse> {
-                override fun onResponse(
-                    call: Call<HistoricalResponse>,
-                    response: Response<HistoricalResponse>
-                ) {
-                    allCases = response.body()?.timeline?.cases
-                    buildSortedDateList()
-                    showChart()
+
+        val api = retrofit.create(CovidApiService::class.java)
+        val call = api.getVietnamTrends()
+        currentCall = call
+
+        call.enqueue(object : Callback<HistoricalResponse> {
+            override fun onResponse(call: Call<HistoricalResponse>, response: Response<HistoricalResponse>) {
+                // if fragment not added or views released -> skip UI work
+                if (!isAdded || lineChart == null || tvResult == null) {
+                    Log.w(TAG, "Fragment not ready -> skipping onResponse UI update")
+                    return
                 }
 
-                override fun onFailure(call: Call<HistoricalResponse>, t: Throwable) {
-                    Log.e(TAG, "API Error", t)
+                allCases = response.body()?.timeline?.cases
+                buildSortedDateList()
+                showChart()
+            }
+
+            override fun onFailure(call: Call<HistoricalResponse>, t: Throwable) {
+                if (!isAdded || tvResult == null) {
+                    Log.w(TAG, "Fragment not ready -> skipping onFailure UI update")
+                    return
                 }
-            })
+                Log.e(TAG, "API Error", t)
+                tvResult?.text = "Lỗi khi tải dữ liệu"
+            }
+        })
     }
 
     private fun buildSortedDateList() {
@@ -134,7 +163,6 @@ class TrendsFragment : Fragment() {
 
     private fun showChart() {
         if (sortedDateList.size < 2) return
-
         val dailyCases = mutableListOf<Pair<Long, Int>>()
         for (i in 1 until sortedDateList.size) {
             val today = sortedDateList[i]
@@ -148,7 +176,7 @@ class TrendsFragment : Fragment() {
             Entry(index.toFloat(), entry.second.toFloat())
         }
 
-        lineChart.apply {
+        lineChart?.apply {
             data = LineData(
                 LineDataSet(entries, "Ca nhiễm mới").apply {
                     color = Color.BLUE
