@@ -1,6 +1,9 @@
 package com.example.covid19app
 
+import android.util.Log
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.http.GET
 
 data class HistoricalResponse(
