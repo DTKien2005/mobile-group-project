@@ -49,7 +49,7 @@ class VnDashboardActivity : AppCompatActivity() {
                 tvCountry!!.text = "Country: " + stats?.country
                 tvCases!!.text = "Cases: " + stats?.cases
                 tvTodayCases!!.text = "Today Cases: " + stats?.todayCases
-                tvDeaths!!.text = "Deaths: " + s tats?.deaths
+                tvDeaths!!.text = "Deaths: " + stats?.deaths
                 tvTodayDeaths!!.text = "Today Deaths: " + stats?.todayDeaths
                 tvRecovered!!.text = "Recovered: " + stats?.recovered
                 tvTodayRecovered!!.text = "Today Recovered: " + stats?.todayRecovered
