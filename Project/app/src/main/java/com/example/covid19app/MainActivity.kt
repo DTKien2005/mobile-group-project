@@ -1,12 +1,15 @@
 package com.example.covid19app
 
-import CountryAdapter
 import android.os.Bundle
+import com.example.covid19app.ui.CountryAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.Callback
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,3 +38,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 }
+
+
+
+

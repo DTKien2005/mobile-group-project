@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covid19app.R
 
-class CountryBrowseActivity : AppCompatActivity() {
+class CountryBrowserActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView: SearchView
@@ -16,7 +16,7 @@ class CountryBrowseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("CountryBrowse", "onCreate called")
-        setContentView(R.layout.activity_country_browser)
+        setContentView(R.layout.activity_main)
 
         recyclerView = findViewById(R.id.recyclerView)
         searchView = findViewById(R.id.searchView)
