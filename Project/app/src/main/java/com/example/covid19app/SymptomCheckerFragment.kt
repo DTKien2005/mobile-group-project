@@ -45,9 +45,9 @@ class SymptomCheckerFragment : Fragment() {
         val prefs = requireContext().getSharedPreferences("symptom_prefs", Context.MODE_PRIVATE)
         val lastCheck = prefs.getString("last_check", null)
         tvLastCheck.text = if (lastCheck != null) {
-            "Lần kiểm tra trước: $lastCheck"
+            "Last check:: $lastCheck"
         } else {
-            "Chưa có lần kiểm tra nào"
+            "No previous check"
         }
 
         btnCheck.setOnClickListener {
@@ -57,14 +57,14 @@ class SymptomCheckerFragment : Fragment() {
             if (cbBreath.isChecked) symptomCount++
 
             tvResult.text = when (symptomCount) {
-                0 -> "Không có triệu chứng."
-                1 -> "Có một vài triệu chứng, theo dõi thêm."
-                else -> "Nhiều triệu chứng, hãy đi khám."
+                0 -> "No symptoms."
+                1 -> "Some symptoms, keep monitoring."
+                else -> "Multiple symptoms, please see a doctor."
             }
 
             val date = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
             prefs.edit().putString("last_check", date).apply()
-            tvLastCheck.text = "Lần kiểm tra trước: $date"
+            tvLastCheck.text = "Last check: $date"
 
             Log.d(TAG, "Checked symptoms: $symptomCount at $date")
         }

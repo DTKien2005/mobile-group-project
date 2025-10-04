@@ -34,21 +34,21 @@
                 android:id="@+id/cbFever"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sốt"
+                android:text="Fever"
                 android:textSize="16sp"/>
 
             <CheckBox
                 android:id="@+id/cbCough"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ho"
+                android:text="Cough"
                 android:textSize="16sp"/>
 
             <CheckBox
                 android:id="@+id/cbBreath"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Khó thở"
+                android:text="Dyspnea"
                 android:textSize="16sp"/>
 
         </LinearLayout>
@@ -58,7 +58,7 @@
         android:id="@+id/btnCheck"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Kiểm tra"
+        android:text="Check"
         android:textAllCaps="false"
         android:backgroundTint="@color/facebook_200"
         android:textColor="@color/white"

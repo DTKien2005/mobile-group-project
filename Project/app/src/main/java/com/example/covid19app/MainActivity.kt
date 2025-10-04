@@ -17,8 +17,9 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate called")
         setContentView(R.layout.vndashboard)
         val intent = Intent(this, VnDashboardActivity::class.java)
-            startActivity(intent)
-            Log.d(TAG, "Dashboard button")
+        startActivity(intent)
+        finish()
+        Log.d(TAG, "Dashboard button")
     }
 
     override fun onStart() {
