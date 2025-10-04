@@ -135,7 +135,7 @@ class TrendsFragment : Fragment() {
                     return
                 }
                 Log.e(TAG, "API Error", t)
-                tvResult?.text = "Lỗi khi tải dữ liệu"
+                tvResult?.text = "Lỗi tải dữ liệu"
             }
         })
     }
