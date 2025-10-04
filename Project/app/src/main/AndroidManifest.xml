@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.covid19app">
+
+    <!-- Allow app connect Internet-->
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,8 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.CountryBrowserActivity" />
+
+        <activity
+            android:name=".features.vndashboard.ui.view.VnDashboardActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
