@@ -1,4 +1,4 @@
-package com.example.covid19app.ui.theme
+Spackage com.example.covid19app.ui.theme
 
 import android.app.Activity
 import android.os.Build
