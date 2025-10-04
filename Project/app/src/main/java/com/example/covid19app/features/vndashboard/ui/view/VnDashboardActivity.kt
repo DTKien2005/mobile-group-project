@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
 import com.example.covid19app.R
 import com.example.covid19app.SymptomCheckerFragment
-import com.example.covid19app.TrendsFragment
 
 class VnDashboardActivity : AppCompatActivity() {
 
@@ -23,15 +21,7 @@ class VnDashboardActivity : AppCompatActivity() {
                 .commit()
         }
 
-        // Home
-        findViewById<Button>(R.id.btnHome)?.setOnClickListener {
-            supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, StatsFragment())
-                .commit()
-        }
-
-        // Symptom Checker
+        // Buttons from vndashboard.xml (Home + Symptom Checker exist there:contentReference[oaicite:6]{index=6})
         findViewById<Button>(R.id.btnSymptomChecker).setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SymptomCheckerFragment())
@@ -39,12 +29,13 @@ class VnDashboardActivity : AppCompatActivity() {
                 .commit()
         }
 
-        // Trends (Vietnam COVID-19 daily chart + date picker)
-        findViewById<Button>(R.id.btnTrend).setOnClickListener {
-            supportFragmentManager.commit {
-                replace(R.id.fragment_container, TrendsFragment())
-                addToBackStack("trends")
-            }
+        // If you added an ID to the first button ("Home"), wire it:
+        val btnHome = findViewById<Button>(R.id.btnHome) // add id in XML
+        btnHome?.setOnClickListener {
+            supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, StatsFragment())
+                .commit()
         }
     }
 }

@@ -31,7 +31,6 @@ class StatsFragment : Fragment() {
         val tvPopulation     = root.findViewById<TextView>(R.id.tvPopulation)
 
         CovidApiService.fetchCovidStats(requireContext(), object : CovidCallback {
-
             override fun onSuccess(stats: CovidStats?) {
                 tvUpdated.text        = "Updated: ${stats?.updated}"
                 tvCountry.text        = "Country: ${stats?.country}"
