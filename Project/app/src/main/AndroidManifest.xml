@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- Allow app connect Internet-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- NEW: required on Android 13+ for posting notifications -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- In AndroidManifest.xml for API 31+ -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- NEW: so we can re-schedule the 9:00 AM alarm after device reboot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -20,10 +32,40 @@
             android:theme="@style/Theme.Covid19App">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".VnDashboardActivity"
+            android:exported="false" />
+
+        <!-- Receives BOOT_COMPLETED to reschedule alarms after device reboot -->
+        <receiver
+            android:name=".notify.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Receives time changes to reschedule the next 9:00 AM -->
+        <receiver
+            android:name=".notify.TimeChangeReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET"/>
+                <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- Make sure the alarm target is declared (explicit broadcasts work fine non-exported) -->
+        <receiver
+            android:name=".notify.ReminderReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>
