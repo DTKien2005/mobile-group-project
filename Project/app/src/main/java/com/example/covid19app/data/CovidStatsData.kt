@@ -1,8 +1,8 @@
-package com.example.covid19app.features.vndashboard.data.model
+package com.example.covid19app.data
 
 import com.google.gson.annotations.SerializedName
 
-class CovidStats // Constructor
+class CovidStatsData // Constructor
     (// Getters and Setters
     @field:SerializedName("updated") var updated: Long,
     @field:SerializedName(

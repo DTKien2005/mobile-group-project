@@ -1,10 +1,12 @@
-package com.example.covid19app
+package com.example.covid19app.activity
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.covid19app.api.RetrofitInstance
+import com.example.covid19app.data.VaccineResponseData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,32 +19,31 @@ fun CompareScreen() {
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
-        RetrofitInstance.api.getVaccineCoverage().enqueue(object : Callback<VaccineResponse> {
+        RetrofitInstance.api.getVaccineCoverage().enqueue(object : Callback<VaccineResponseData> {
             override fun onResponse(
-                call: Call<VaccineResponse?>,
-                response: Response<VaccineResponse?>
+                call: Call<VaccineResponseData?>,
+                response: Response<VaccineResponseData?>
             ) {
                 if (response.isSuccessful) {
                     vaccineData = response.body()?.timeline ?: emptyMap()
                 }
             }
 
-            override fun onFailure(call: Call<VaccineResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<VaccineResponseData?>, t: Throwable) {
                 errorMessage = "Vietnam data error: ${t.message}"
             }
         })
 
-        RetrofitInstance.api.getWorldData().enqueue(object : Callback<WorldData> {
+        RetrofitInstance.api.getWorldData().enqueue(object : Callback<Map<String, Long>> {
             override fun onResponse(
-                call: Call<WorldData?>,
-                response: Response<WorldData?>
+                call: Call<Map<String, Long>>,
+                response: Response<Map<String, Long>>
             ) {
                 if (response.isSuccessful) {
-                    worldData = response.body()?.timeline ?: emptyMap()
+                    worldData = response.body().orEmpty()
                 }
             }
-
-            override fun onFailure(call: Call<WorldData?>, t: Throwable) {
+            override fun onFailure(call: Call<Map<String, Long>>, t: Throwable) {
                 errorMessage = "World data error: ${t.message}"
             }
         })

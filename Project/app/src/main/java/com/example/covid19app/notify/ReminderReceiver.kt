@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.covid19app.notify.NotificationScheduler
 import com.example.covid19app.R
-import com.example.covid19app.VnDashboardActivity
+import com.example.covid19app.activity.VnDashboardActivity
 
 class ReminderReceiver : BroadcastReceiver() {
 

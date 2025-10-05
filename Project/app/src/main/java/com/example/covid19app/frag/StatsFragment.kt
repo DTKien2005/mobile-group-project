@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.covid19app.R
 import com.example.covid19app.api.CovidApiService
-import com.example.covid19app.features.vndashboard.data.model.CovidStats
+import com.example.covid19app.data.CovidStatsData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,8 +34,8 @@ class StatsFragment : Fragment() {
 
         // Call the merged Retrofit API
         val api = CovidApiService.create()
-        api.getVietnamStats().enqueue(object : Callback<CovidStats> {
-            override fun onResponse(call: Call<CovidStats>, response: Response<CovidStats>) {
+        api.getVietnamStats().enqueue(object : Callback<CovidStatsData> {
+            override fun onResponse(call: Call<CovidStatsData>, response: Response<CovidStatsData>) {
                 val stats = response.body()
                 if (!isAdded || stats == null) return
 
@@ -53,7 +53,7 @@ class StatsFragment : Fragment() {
                 tvPopulation.text     = "Population: ${stats.population}"
             }
 
-            override fun onFailure(call: Call<CovidStats>, t: Throwable) {
+            override fun onFailure(call: Call<CovidStatsData>, t: Throwable) {
                 Log.e("StatsFragment", "API error", t)
                 if (isAdded) tvCountry.text = "Error!!!"
             }

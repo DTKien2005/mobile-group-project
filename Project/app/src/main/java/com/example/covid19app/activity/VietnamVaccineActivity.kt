@@ -1,11 +1,14 @@
-package com.example.covid19app
+package com.example.covid19app.activity
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.covid19app.api.RetrofitInstance
+import com.example.covid19app.data.VaccineResponseData
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -15,10 +18,10 @@ fun VaccineCoverageScreen() {
     var errorMessage by remember { mutableStateOf<String?>(null)}
 
     LaunchedEffect(Unit) {
-        RetrofitInstance.api.getVaccineCoverage().enqueue(object : retrofit2.Callback<VaccineResponse>{
+        RetrofitInstance.api.getVaccineCoverage().enqueue(object : Callback<VaccineResponseData>{
             override fun onResponse(
-                call: Call<VaccineResponse?>,
-                response: Response<VaccineResponse?>
+                call: Call<VaccineResponseData?>,
+                response: Response<VaccineResponseData?>
             ) {
                 if (response.isSuccessful) {
                     vaccineData = response.body()?.timeline ?: emptyMap()
@@ -28,7 +31,7 @@ fun VaccineCoverageScreen() {
                 }
             }
 
-            override fun onFailure(call: Call<VaccineResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<VaccineResponseData?>, t: Throwable) {
                 errorMessage = "Failure: ${t.message}"
             }
         })

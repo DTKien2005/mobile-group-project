@@ -31,8 +31,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/app_name"
             android:padding="6dp"
-            app:tint="@android:color/white"
-            android:src="@android:drawable/ic_dialog_info" />
+            android:src="@android:drawable/ic_dialog_info"
+            app:tint="@android:color/white" />
     </LinearLayout>
 
     <!-- Row of Navigation Buttons -->
@@ -46,7 +46,7 @@
             android:id="@+id/btnHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.7"
             android:text="Home"
             android:drawableTop="@drawable/ic_home"
             android:drawablePadding="4dp"
@@ -56,35 +56,51 @@
             android:id="@+id/btnSymptomChecker"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Symptom Checker"
+            android:layout_weight="0.7"
             android:drawableTop="@drawable/ic_health"
             android:drawablePadding="4dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:text="Symptom Checker" />
 
         <Button
             android:id="@+id/btnTrend"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.7"
             android:text="Trends"
             android:drawableTop="@drawable/ic_trend"
             android:drawablePadding="4dp"
             android:gravity="center" />
 
         <Button
-            android:id="@+id/btnTab4"
+            android:id="@+id/btnVnVac"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Tab4" />
+            android:layout_weight="0.7"
+            android:text="Vietnam Vaccine"
+            android:drawableTop="@drawable/ic_flag_vn"
+            android:drawablePadding="4dp"
+            android:gravity="center"/>
 
         <Button
-            android:id="@+id/btnTab5"
+            android:id="@+id/btnWorldVac"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Tab5" />
+            android:layout_weight="0.7"
+            android:text="World Vaccine"
+            android:drawableTop="@drawable/ic_public"
+            android:drawablePadding="4dp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/btnVnVsWorld"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7"
+            android:text="Vietnam Vs World"
+            android:drawableTop="@drawable/ic_compare"
+            android:drawablePadding="4dp"
+            android:gravity="center" />
     </LinearLayout>
 
     <!-- Fragment Container (for StatsFragment / SymptomCheckerActivity) -->

@@ -40,7 +40,6 @@ android {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.13.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -49,17 +48,38 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.material)
 
-    implementation("androidx.fragment:fragment-ktx:1.8.3")
-    implementation("com.google.android.material:material:1.12.0")
+    // API
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.squareup.okhttp3:logging-interceptor:5.1.0")
-    implementation(libs.material)
+    implementation("com.google.code.gson:gson:2.13.2")
+
+    // Core + AppCompat + Material
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("com.google.android.material:material:1.13.0")
+
+    // Fragments + RecyclerView + View
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-beta01")
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.3.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
 
+    // Jetpack Navigation (for Fragment-based navigation)
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.5")
+
+    // Lifecycle + Coroutines
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+
+    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,9 +87,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
-    implementation(libs.navigation.compose)
 
 
 }

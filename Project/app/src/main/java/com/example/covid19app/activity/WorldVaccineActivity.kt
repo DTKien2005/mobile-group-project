@@ -1,11 +1,13 @@
-package com.example.covid19app
+package com.example.covid19app.activity
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.covid19app.api.RetrofitInstance
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -15,20 +17,19 @@ fun WorldScreen() {
     var errorMessage by remember { mutableStateOf<String?>(null)}
 
     LaunchedEffect(Unit) {
-        RetrofitInstance.api.getWorldData().enqueue(object : retrofit2.Callback<WorldData>{
+        RetrofitInstance.api.getWorldData().enqueue(object : Callback<Map<String, Long>> {
             override fun onResponse(
-                call: Call<WorldData?>,
-                response: Response<WorldData?>
+                call: Call<Map<String, Long>>,
+                response: Response<Map<String, Long>>
             ) {
                 if (response.isSuccessful) {
-                    worldData = response.body()?.timeline ?: emptyMap()
-                }
-                else {
+                    worldData = response.body().orEmpty()
+                } else {
                     errorMessage = "Error: ${response.code()}"
                 }
             }
 
-            override fun onFailure(call: Call<WorldData?>, t: Throwable) {
+            override fun onFailure(call: Call<Map<String, Long>>, t: Throwable) {
                 errorMessage = "Failure: ${t.message}"
             }
         })
