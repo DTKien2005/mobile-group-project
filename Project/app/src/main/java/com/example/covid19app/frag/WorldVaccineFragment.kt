@@ -10,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class WorldFragment : Fragment(R.layout.fragment_world) {
+class WorldVaccineFragment : Fragment(R.layout.fragment_world) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

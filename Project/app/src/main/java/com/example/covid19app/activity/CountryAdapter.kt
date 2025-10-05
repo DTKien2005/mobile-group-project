@@ -1,10 +1,11 @@
-package com.example.covid19app
+package com.example.covid19app.activity
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.covid19app.R
 import com.example.covid19app.data.Country
 
 class CountryAdapter(private val originalList: List<Country>) :

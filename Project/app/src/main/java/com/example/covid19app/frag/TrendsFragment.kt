@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.covid19app.R
-import com.example.covid19app.api.CovidApiService
 import com.example.covid19app.api.HistoricalResponse
 import com.example.covid19app.api.RetrofitInstance
 import com.github.mikephil.charting.charts.LineChart
@@ -56,7 +55,7 @@ class TrendsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root = inflater.inflate(R.layout.activity_trends, container, false)
+        val root = inflater.inflate(R.layout.fragment_trends, container, false)
         lineChart = root.findViewById(R.id.lineChart)
         tvResult = root.findViewById(R.id.tvResult)
 

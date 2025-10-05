@@ -1,4 +1,4 @@
-package com.example.covid19app
+package com.example.covid19app.frag
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,13 +9,15 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.covid19app.activity.CountryAdapter
+import com.example.covid19app.R
 import com.example.covid19app.api.RetrofitInstance
 import com.example.covid19app.data.Country
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CountryFragment : Fragment() {
+class CountrySearchFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CountryAdapter
@@ -26,7 +28,7 @@ class CountryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Reuse activity_main.xml as the fragment layout
-        val view = inflater.inflate(R.layout.fragment_country, container, false)
+        val view = inflater.inflate(R.layout.fragment_searchcountry, container, false)
 
         recyclerView = view.findViewById(R.id.recyclerView)
         searchView = view.findViewById(R.id.searchView)

@@ -11,12 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+
 import com.example.covid19app.R
 import com.example.covid19app.frag.CompareFragment
 import com.example.covid19app.frag.StatsFragment
 import com.example.covid19app.frag.TrendsFragment
 import com.example.covid19app.frag.VaccineCoverageFragment
-import com.example.covid19app.frag.WorldFragment
+import com.example.covid19app.frag.WorldVaccineFragment
+import com.example.covid19app.frag.CountrySearchFragment
 import com.example.covid19app.notify.NotificationScheduler
 
 class VnDashboardActivity : AppCompatActivity() {
@@ -88,6 +90,7 @@ class VnDashboardActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnVnVac).setOnClickListener { pager.currentItem = 3 }
         findViewById<Button>(R.id.btnWorldVac).setOnClickListener { pager.currentItem = 4 }
         findViewById<Button>(R.id.btnVnVsWorld).setOnClickListener { pager.currentItem = 5 }
+        findViewById<Button>(R.id.btnSearch).setOnClickListener { pager.currentItem = 6 }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -99,14 +102,15 @@ class VnDashboardActivity : AppCompatActivity() {
 
     // Simple pager with your three screens
     private class DashboardPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
-        override fun getItemCount(): Int = 6
+        override fun getItemCount(): Int = 7
         override fun createFragment(position: Int): Fragment = when (position) {
             0 -> StatsFragment()
             1 -> SymptomCheckerActivity()
             2 -> TrendsFragment()
             3 -> VaccineCoverageFragment()
-            4 -> WorldFragment()
+            4 -> WorldVaccineFragment()
             5 -> CompareFragment()
+            6 -> CountrySearchFragment()
             else -> StatsFragment()
         }
     }
