@@ -1,48 +1,103 @@
 package com.example.covid19app
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.example.covid19app.frag.StatsFragment
 import com.example.covid19app.frag.TrendsFragment
+import com.example.covid19app.notify.NotificationScheduler
 
 class VnDashboardActivity : AppCompatActivity() {
+
+    companion object {
+        private const val KEY_CURRENT_ITEM = "key_current_item"
+    }
+
+    // Ask for POST_NOTIFICATIONS on Android 13+
+    private val requestNotifPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted || Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            // Android 12+: ensure we have exact-alarm consent
+            if (NotificationScheduler.requestExactAlarmIfNeeded(this)) {
+                // The system settings screen was opened; don't schedule yet
+                return@registerForActivityResult
+            }
+            NotificationScheduler.scheduleDailyReminder(this, hour = 9, minute = 0)
+            Toast.makeText(this, "Daily notification set for 9:00 AM", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private lateinit var pager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.vndashboard)
 
-        // Default screen = Home (stats)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, StatsFragment())
-                .commit()
-        }
+        // --- ViewPager2 setup ---
+        pager = findViewById(R.id.viewPager)
+        pager.adapter = DashboardPagerAdapter(this)
+        pager.offscreenPageLimit = 2
 
-        // Home
-        findViewById<Button>(R.id.btnHome)?.setOnClickListener {
-            supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, StatsFragment())
-                .commit()
-        }
+        // Restore previously selected page (if any)
+        val initialIndex = savedInstanceState?.getInt(KEY_CURRENT_ITEM) ?: 0
+        pager.setCurrentItem(initialIndex, false)
 
-        // Symptom Checker
-        findViewById<Button>(R.id.btnSymptomChecker).setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SymptomCheckerActivity())
-                .addToBackStack("symptom")
-                .commit()
-        }
-
-        // Trends (Vietnam COVID-19 daily chart + date picker)
-        findViewById<Button>(R.id.btnTrend).setOnClickListener {
-            supportFragmentManager.commit {
-                replace(R.id.fragment_container, TrendsFragment())
-                addToBackStack("trends")
+        // --- Bell button: tap = daily 9:00, long-press = 60s test ---
+        // (Preserved behavior)
+        findViewById<ImageButton>(R.id.btnNotify).apply {
+            setOnClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestNotifPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    return@setOnClickListener
+                }
+                if (NotificationScheduler.requestExactAlarmIfNeeded(this@VnDashboardActivity)) return@setOnClickListener
+                NotificationScheduler.scheduleDailyReminder(this@VnDashboardActivity, 9, 0)
+                Toast.makeText(this@VnDashboardActivity, "Daily notification set for 9:00 AM", Toast.LENGTH_SHORT).show()
             }
+            setOnLongClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestNotifPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    return@setOnLongClickListener true
+                }
+                if (NotificationScheduler.requestExactAlarmIfNeeded(this@VnDashboardActivity)) return@setOnLongClickListener true
+                NotificationScheduler.scheduleTestIn(this@VnDashboardActivity, 60)
+                Toast.makeText(this@VnDashboardActivity, "Test notification in 60 seconds", Toast.LENGTH_SHORT).show()
+                true
+            }
+        }
+
+        // --- Bottom buttons jump to pages instead of fragment transactions ---
+        findViewById<Button>(R.id.btnHome).setOnClickListener { pager.currentItem = 0 }
+        findViewById<Button>(R.id.btnSymptomChecker).setOnClickListener { pager.currentItem = 1 }
+        findViewById<Button>(R.id.btnTrend).setOnClickListener { pager.currentItem = 2 }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (::pager.isInitialized) {
+            outState.putInt(KEY_CURRENT_ITEM, pager.currentItem)
+        }
+    }
+
+    // Simple pager with your three screens
+    private class DashboardPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+        override fun getItemCount(): Int = 3
+        override fun createFragment(position: Int): Fragment = when (position) {
+            0 -> StatsFragment()
+            1 -> SymptomCheckerActivity() // this is a Fragment
+            2 -> TrendsFragment()
+            else -> StatsFragment()
         }
     }
 }

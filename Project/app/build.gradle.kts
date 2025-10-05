@@ -58,6 +58,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.squareup.okhttp3:logging-interceptor:5.1.0")
     implementation(libs.material)
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
