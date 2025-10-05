@@ -55,8 +55,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    implementation("com.android.volley:volley:1.2.1")
     implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.1.0")
     implementation(libs.material)
 
     testImplementation(libs.junit)

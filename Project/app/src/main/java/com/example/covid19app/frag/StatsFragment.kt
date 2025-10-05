@@ -1,4 +1,4 @@
-package com.example.covid19app.symptrend.frag
+package com.example.covid19app.frag
 
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.covid19app.R
-import com.example.covid19app.features.vndashboard.data.api.CovidApiService
+import com.example.covid19app.api.CovidApiService
 import com.example.covid19app.features.vndashboard.data.model.CovidStats
 import retrofit2.Call
 import retrofit2.Callback

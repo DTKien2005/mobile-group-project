@@ -1,4 +1,4 @@
-package com.example.covid19app.symptrend.frag
+package com.example.covid19app.frag
 
 import android.app.DatePickerDialog
 import android.graphics.Color
@@ -11,8 +11,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.covid19app.R
-import com.example.covid19app.features.vndashboard.data.api.CovidApiService
-import com.example.covid19app.features.vndashboard.data.api.HistoricalResponse
+import com.example.covid19app.api.CovidApiService
+import com.example.covid19app.api.HistoricalResponse
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.math.abs
 
 class TrendsFragment : Fragment() {
     private val TAG = "TrendsFragment"
@@ -38,7 +39,15 @@ class TrendsFragment : Fragment() {
     private var allCases: Map<String, Int>? = null
     private var sortedDateList: List<Pair<Long, Int>> = emptyList()
 
-    private val inputFormat = SimpleDateFormat("M/d/yy", Locale.ENGLISH)
+    // Keep plotted points & labels so we can zoom later
+    private var dailyData: List<Pair<Long, Int>> = emptyList()
+    private var labels: List<String> = emptyList()
+
+    // Accept both 1/2/20 and 01/02/20
+    private val inputFormats = listOf(
+        SimpleDateFormat("M/d/yy", Locale.ENGLISH),
+        SimpleDateFormat("MM/dd/yy", Locale.ENGLISH)
+    )
     private val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     override fun onCreateView(
@@ -50,8 +59,7 @@ class TrendsFragment : Fragment() {
         lineChart = root.findViewById(R.id.lineChart)
         tvResult = root.findViewById(R.id.tvResult)
 
-        val btnPickDate: Button = root.findViewById(R.id.btnPickDate)
-        btnPickDate.setOnClickListener { showDatePicker() }
+        root.findViewById<Button>(R.id.btnPickDate).setOnClickListener { showDatePicker() }
 
         fetchCovidData()
         return root
@@ -67,26 +75,31 @@ class TrendsFragment : Fragment() {
 
     private fun showDatePicker() {
         val c = Calendar.getInstance()
-        DatePickerDialog(
+
+        val dlg = DatePickerDialog(
             requireContext(),
             { _, year, month, dayOfMonth ->
                 val selCal = Calendar.getInstance().apply {
                     set(year, month, dayOfMonth, 0, 0, 0)
                     set(Calendar.MILLISECOND, 0)
                 }
-                val selMillis = selCal.timeInMillis
+                var selMillis = selCal.timeInMillis
 
                 if (sortedDateList.isEmpty()) {
-                    tvResult?.text = "Chưa có dữ liệu để tra cứu"
+                    tvResult?.text = "No data available to view."
                     return@DatePickerDialog
                 }
 
+                // Clamp to data range to avoid confusing future/out-of-range picks
+                val minMillis = sortedDateList.first().first
+                val maxMillis = sortedDateList.last().first
+                selMillis = selMillis.coerceIn(minMillis, maxMillis)
+
+                // Find nearest date ≤ selected (or fallback to ≥)
                 var nearest = sortedDateList.lastOrNull { it.first <= selMillis }
+                if (nearest == null) nearest = sortedDateList.firstOrNull { it.first >= selMillis }
                 if (nearest == null) {
-                    nearest = sortedDateList.firstOrNull { it.first >= selMillis }
-                }
-                if (nearest == null) {
-                    tvResult?.text = "Không có dữ liệu nào để hiển thị"
+                    tvResult?.text = "No data found for this date."
                     return@DatePickerDialog
                 }
 
@@ -95,12 +108,22 @@ class TrendsFragment : Fragment() {
                 val diff = (nearest.second - prevVal).coerceAtLeast(0)
 
                 val nearestDate = outputFormat.format(Date(nearest.first))
-                tvResult?.text = "Kết quả gần nhất ($nearestDate): $diff ca nhiễm mới"
+                tvResult?.text = "Closest result ($nearestDate): $diff new cases"
+
+                // Zoom chart around this date (±7 days window; tweak as desired)
+                zoomToDateMillis(nearest.first, halfWindowDays = 7)
             },
             c.get(Calendar.YEAR),
             c.get(Calendar.MONTH),
             c.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        )
+
+        // Limit the picker to the available data window
+        if (sortedDateList.isNotEmpty()) {
+            dlg.datePicker.minDate = sortedDateList.first().first
+            dlg.datePicker.maxDate = sortedDateList.last().first
+        }
+        dlg.show()
     }
 
     private fun fetchCovidData() {
@@ -110,24 +133,33 @@ class TrendsFragment : Fragment() {
 
         call.enqueue(object : Callback<HistoricalResponse> {
             override fun onResponse(call: Call<HistoricalResponse>, response: Response<HistoricalResponse>) {
-                // if fragment not added or views released -> skip UI work
                 if (!isAdded || lineChart == null || tvResult == null) {
                     Log.w(TAG, "Fragment not ready -> skipping onResponse UI update")
                     return
                 }
 
-                allCases = response.body()?.timeline?.cases
+                if (!response.isSuccessful) {
+                    tvResult?.text = "Failed to load data (code: ${response.code()})"
+                    Log.e(TAG, "HTTP error ${response.code()} body=${response.errorBody()?.string()}")
+                    return
+                }
+
+                val cases = response.body()?.timeline?.cases
+                if (cases.isNullOrEmpty()) {
+                    tvResult?.text = "No historical data available."
+                    Log.e(TAG, "Empty or null cases map")
+                    return
+                }
+
+                allCases = cases
                 buildSortedDateList()
                 showChart()
             }
 
             override fun onFailure(call: Call<HistoricalResponse>, t: Throwable) {
-                if (!isAdded || tvResult == null) {
-                    Log.w(TAG, "Fragment not ready -> skipping onFailure UI update")
-                    return
-                }
+                if (!isAdded || tvResult == null) return
                 Log.e(TAG, "API Error", t)
-                tvResult?.text = "Lỗi tải dữ liệu"
+                tvResult?.text = "Failed to load data: ${t.localizedMessage ?: "Unknown error"}"
             }
         })
     }
@@ -135,16 +167,18 @@ class TrendsFragment : Fragment() {
     private fun buildSortedDateList() {
         val tmp = mutableListOf<Pair<Long, Int>>()
         allCases?.forEach { (k, v) ->
-            val d = runCatching { inputFormat.parse(k) }.getOrNull()
-            if (d != null) {
+            val parsedDate = inputFormats.firstNotNullOfOrNull { fmt ->
+                runCatching { fmt.parse(k) }.getOrNull()
+            }
+            if (parsedDate != null) {
                 val cal = Calendar.getInstance().apply {
-                    time = d
+                    time = parsedDate
                     set(Calendar.HOUR_OF_DAY, 0)
                     set(Calendar.MINUTE, 0)
                     set(Calendar.SECOND, 0)
                     set(Calendar.MILLISECOND, 0)
                 }
-                tmp.add(Pair(cal.timeInMillis, v))
+                tmp.add(cal.timeInMillis to v)
             } else {
                 Log.e(TAG, "Parse fail for key=$k")
             }
@@ -154,23 +188,32 @@ class TrendsFragment : Fragment() {
     }
 
     private fun showChart() {
-        if (sortedDateList.size < 2) return
+        if (sortedDateList.size < 2) {
+            tvResult?.text = "Not enough data to display chart."
+            lineChart?.clear()
+            return
+        }
+
+        // Build daily deltas
         val dailyCases = mutableListOf<Pair<Long, Int>>()
         for (i in 1 until sortedDateList.size) {
             val today = sortedDateList[i]
             val yesterday = sortedDateList[i - 1]
             val diff = (today.second - yesterday.second).coerceAtLeast(0)
-            dailyCases.add(Pair(today.first, diff))
+            dailyCases.add(today.first to diff)
         }
 
-        val labels = dailyCases.map { outputFormat.format(Date(it.first)) }
-        val entries = dailyCases.mapIndexed { index, entry ->
-            Entry(index.toFloat(), entry.second.toFloat())
+        // Save for zooming later
+        dailyData = dailyCases
+        labels = dailyCases.map { outputFormat.format(Date(it.first)) }
+
+        val entries = dailyCases.mapIndexed { index, pair ->
+            Entry(index.toFloat(), pair.second.toFloat())
         }
 
         lineChart?.apply {
             data = LineData(
-                LineDataSet(entries, "Ca nhiễm mới").apply {
+                LineDataSet(entries, "New Cases").apply {
                     color = Color.BLUE
                     lineWidth = 2f
                     setDrawCircles(false)
@@ -180,12 +223,12 @@ class TrendsFragment : Fragment() {
             xAxis.apply {
                 valueFormatter = IndexAxisValueFormatter(labels)
                 position = XAxis.XAxisPosition.BOTTOM
-                setDrawLabels(false)
+                setDrawLabels(true)
+                setLabelCount(6, true)
                 setDrawGridLines(false)
             }
             axisLeft.apply {
                 axisMinimum = 0f
-                setDrawLabels(false)
                 setDrawGridLines(true)
             }
             axisRight.isEnabled = false
@@ -193,5 +236,34 @@ class TrendsFragment : Fragment() {
             legend.isEnabled = false
             invalidate()
         }
+
+        tvResult?.text = "Loaded ${dailyCases.size} days of new case data."
+    }
+
+    private fun zoomToDateMillis(targetMillis: Long, halfWindowDays: Int = 7) {
+        val chart = lineChart ?: return
+        if (dailyData.isEmpty()) return
+
+        // index of the exact or closest point
+        var idx = dailyData.indexOfFirst { it.first == targetMillis }
+        if (idx == -1) {
+            idx = dailyData.indices.minByOrNull { i ->
+                abs(dailyData[i].first - targetMillis)
+            } ?: return
+        }
+
+        // visible window size in "points" (each point ~ 1 day)
+        val start = (idx - halfWindowDays).coerceAtLeast(0)
+        val end = (idx + halfWindowDays).coerceAtMost(dailyData.lastIndex)
+        val visibleCount = (end - start + 1).coerceAtLeast(1)
+
+        chart.setVisibleXRangeMinimum(visibleCount.toFloat())
+        chart.setVisibleXRangeMaximum(visibleCount.toFloat())
+
+        // Move left edge to start of window, then center/highlight
+        chart.moveViewToX(start.toFloat())
+        val y = dailyData[idx].second.toFloat()
+        chart.centerViewToAnimated(idx.toFloat(), y, chart.axisLeft.axisDependency, 400)
+        chart.highlightValue(idx.toFloat(), 0, false)
     }
 }

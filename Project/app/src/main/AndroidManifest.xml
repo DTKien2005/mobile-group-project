@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.vndashboard.ui.view.VnDashboardActivity"
+            android:name=".VnDashboardActivity"
             android:exported="false" />
     </application>
 

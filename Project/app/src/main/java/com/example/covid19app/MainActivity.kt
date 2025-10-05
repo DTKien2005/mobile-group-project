@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 
 import androidx.appcompat.app.AppCompatActivity
-import com.example.covid19app.features.vndashboard.ui.view.VnDashboardActivity
 
 
 class MainActivity : AppCompatActivity() {
