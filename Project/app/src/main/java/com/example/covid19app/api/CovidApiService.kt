@@ -1,5 +1,6 @@
 package com.example.covid19app.api
 
+import com.example.covid19app.data.Country
 import com.example.covid19app.data.CovidStatsData
 import com.example.covid19app.data.VaccineResponseData
 import okhttp3.OkHttpClient
@@ -9,52 +10,58 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-// --- data models for historical endpoint ---
+// --- Models for historical endpoint ---
 data class HistoricalResponse(
     val timeline: Timeline?
 )
+
 data class Timeline(
     val cases: Map<String, Int>?,
     val deaths: Map<String, Int>?,
     val recovered: Map<String, Int>?
 )
 
-// --- unified Retrofit service ---
+// --- Unified Retrofit Service Interface ---
 interface CovidApiService {
 
-    // Current stats for Vietnam
+    // Fetch all countries' COVID data
+    @GET("v3/covid-19/countries")
+    fun getCountries(): Call<List<Country>>
+
+    // Vietnam current stats
     @GET("v3/covid-19/countries/VN")
     fun getVietnamStats(): Call<CovidStatsData>
 
-    // Historical data for Vietnam (ALL days)
+    // Vietnam historical data (all days)
     @GET("v3/covid-19/historical/Vietnam?lastdays=all")
     fun getVietnamTrends(): Call<HistoricalResponse>
 
-    // Vietnam vaccine coverage (moved from CallAPI)
-    // https://disease.sh/v3/covid-19/vaccine/coverage/countries/Vietnam?lastdays=30&fullData=false
+    // Vietnam vaccine coverage
     @GET("v3/covid-19/vaccine/coverage/countries/Vietnam")
     fun getVaccineCoverage(
         @Query("lastdays") lastDays: String = "30",
         @Query("fullData") fullData: Boolean = false
     ): Call<VaccineResponseData>
 
-    // World vaccine coverage (moved from CallAPI)
-    // https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=30&fullData=false
+    // Global vaccine coverage
     @GET("v3/covid-19/vaccine/coverage")
-    fun getWorldData(
+    fun getWorldVaccineCoverage(
         @Query("lastdays") lastDays: String = "30",
         @Query("fullData") fullData: Boolean = false
     ): Call<Map<String, Long>>
+}
 
-    companion object {
-        fun create(): CovidApiService {
-            val client = OkHttpClient.Builder().build()
-            return Retrofit.Builder()
-                .baseUrl("https://disease.sh/") // must end with /
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(CovidApiService::class.java)
-        }
+// --- Retrofit Singleton Instance ---
+object RetrofitInstance {
+    private const val BASE_URL = "https://disease.sh/"
+
+    val api: CovidApiService by lazy {
+        val client = OkHttpClient.Builder().build()
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CovidApiService::class.java)
     }
 }

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.covid19app.R
-import com.example.covid19app.api.CovidApiService
+import com.example.covid19app.api.RetrofitInstance
 import com.example.covid19app.data.CovidStatsData
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,12 +32,15 @@ class StatsFragment : Fragment() {
         val tvTests          = root.findViewById<TextView>(R.id.tvTests)
         val tvPopulation     = root.findViewById<TextView>(R.id.tvPopulation)
 
-        // Call the merged Retrofit API
-        val api = CovidApiService.create()
-        api.getVietnamStats().enqueue(object : Callback<CovidStatsData> {
-            override fun onResponse(call: Call<CovidStatsData>, response: Response<CovidStatsData>) {
-                val stats = response.body()
-                if (!isAdded || stats == null) return
+        // Use the provided Retrofit singleton
+        RetrofitInstance.api.getVietnamStats()
+            .enqueue(object : Callback<CovidStatsData> {
+                override fun onResponse(
+                    call: Call<CovidStatsData>,
+                    response: Response<CovidStatsData>
+                ) {
+                    val stats = response.body()
+                    if (!isAdded || stats == null) return
 
                 tvUpdated.text        = "Updated: ${stats.updated}"
                 tvCountry.text        = "Country: ${stats.country}"

@@ -15,17 +15,10 @@ class WorldFragment : Fragment(R.layout.fragment_world) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        view.findViewById<View>(R.id.btnToVn).setOnClickListener {
-//            findNavController().navigate(R.id.vaccineCoverageFragment)
-//        }
-//        view.findViewById<View>(R.id.btnToCompare).setOnClickListener {
-//            findNavController().navigate(R.id.compareFragment)
-//        }
-
-        val tv = view.findViewById<TextView>(R.id.tvWorld) // add this TextView in your XML
+        val tv = view.findViewById<TextView>(R.id.tvWorld)
         tv.text = "Loading world vaccine coverage…"
 
-        RetrofitInstance.api.getWorldData(lastDays = "30", fullData = false) // was getWorldCoverage
+        RetrofitInstance.api.getWorldVaccineCoverage(lastDays = "30", fullData = false)
             .enqueue(object : Callback<Map<String, Long>> {
                 override fun onResponse(
                     call: Call<Map<String, Long>>,

@@ -19,73 +19,81 @@ fun CompareScreen() {
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
-        RetrofitInstance.api.getVaccineCoverage().enqueue(object : Callback<VaccineResponseData> {
-            override fun onResponse(
-                call: Call<VaccineResponseData?>,
-                response: Response<VaccineResponseData?>
-            ) {
-                if (response.isSuccessful) {
-                    vaccineData = response.body()?.timeline ?: emptyMap()
+        // Vietnam vaccine coverage (last 30 days, aggregated not fullData)
+        RetrofitInstance.api.getVaccineCoverage(lastDays = "30", fullData = false)
+            .enqueue(object : Callback<VaccineResponseData> {
+                override fun onResponse(
+                    call: Call<VaccineResponseData>,
+                    response: Response<VaccineResponseData>
+                ) {
+                    if (response.isSuccessful) {
+                        vaccineData = response.body()?.timeline ?: emptyMap()
+                    } else {
+                        errorMessage = "Vietnam error: ${response.code()}"
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<VaccineResponseData?>, t: Throwable) {
-                errorMessage = "Vietnam data error: ${t.message}"
-            }
-        })
-
-        RetrofitInstance.api.getWorldData().enqueue(object : Callback<Map<String, Long>> {
-            override fun onResponse(
-                call: Call<Map<String, Long>>,
-                response: Response<Map<String, Long>>
-            ) {
-                if (response.isSuccessful) {
-                    worldData = response.body().orEmpty()
+                override fun onFailure(call: Call<VaccineResponseData>, t: Throwable) {
+                    errorMessage = "Vietnam data error: ${t.message}"
                 }
-            }
-            override fun onFailure(call: Call<Map<String, Long>>, t: Throwable) {
-                errorMessage = "World data error: ${t.message}"
-            }
-        })
+            })
+
+        // World vaccine coverage
+        RetrofitInstance.api.getWorldVaccineCoverage(lastDays = "30", fullData = false)
+            .enqueue(object : Callback<Map<String, Long>> {
+                override fun onResponse(
+                    call: Call<Map<String, Long>>,
+                    response: Response<Map<String, Long>>
+                ) {
+                    if (response.isSuccessful) {
+                        worldData = response.body().orEmpty()
+                    } else {
+                        errorMessage = "World error: ${response.code()}"
+                    }
+                }
+
+                override fun onFailure(call: Call<Map<String, Long>>, t: Throwable) {
+                    errorMessage = "World data error: ${t.message}"
+                }
+            })
     }
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Comparison") }
-            )
-        }
+        topBar = { CenterAlignedTopAppBar(title = { Text("Comparison") }) }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
             when {
-                errorMessage != null -> Text(
-                    "Error: $errorMessage",
-                    color = MaterialTheme.colorScheme.error
-                )
+                errorMessage != null -> Text("Error: $errorMessage", color = MaterialTheme.colorScheme.error)
 
                 vaccineData.isNotEmpty() && worldData.isNotEmpty() -> {
-                    val vietnamLatest = vaccineData.entries.last()
+                    val vnLatest = vaccineData.entries.last()
                     val worldLatest = worldData.entries.last()
 
-                    Text("Vietnam latest: ${vietnamLatest.key} → ${vietnamLatest.value} doses")
+                    Text("Vietnam latest: ${vnLatest.key} → ${vnLatest.value} doses")
                     Text("World latest: ${worldLatest.key} → ${worldLatest.value} doses")
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("VN vs World Timeline:")
+                    Spacer(Modifier.height(16.dp))
+                    Text("VN vs World Timeline (pairwise by index):")
 
-                    vaccineData.keys.zip(worldData.keys).forEach { (vnDate, worldDate) ->
-                        val vnDoses = vaccineData[vnDate]
-                        val worldDoses = worldData[worldDate]
-                        Text("$vnDate: VN $vnDoses | World $worldDoses")
+                    // Note: Map order mirrors API insertion order; for robust alignment, sort by date if needed.
+                    val vnList = vaccineData.toList()
+                    val worldList = worldData.toList()
+                    val count = minOf(vnList.size, worldList.size)
+
+                    repeat(count) { i ->
+                        val (vnDate, vnDoses) = vnList[i]
+                        val (wDate, wDoses) = worldList[i]
+                        Text("$vnDate: VN $vnDoses | World $wDoses (world date $wDate)")
                     }
                 }
 
+                else -> Text("Loading…")
             }
-
         }
     }
 }

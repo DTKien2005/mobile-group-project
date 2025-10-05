@@ -33,8 +33,9 @@ class CompareFragment : Fragment(R.layout.fragment_compare) {
                     call: Call<VaccineResponseData>, response: Response<VaccineResponseData>
                 ) {
                     val vn = response.body()?.timeline.orEmpty()
-                    // World (after VN)
-                    RetrofitInstance.api.getWorldData("30", false)   // was getWorldCoverage
+
+                    // World vaccine coverage (after VN)
+                    RetrofitInstance.api.getWorldVaccineCoverage("30", false)
                         .enqueue(object : Callback<Map<String, Long>> {
                             override fun onResponse(
                                 call: Call<Map<String, Long>>,
