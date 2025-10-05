@@ -6,13 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.covid19app.ui.theme.Covid19AppTheme
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 
 private const val TAG = "MainActivity"
 
@@ -23,11 +21,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Covid19AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "vaccine",
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    composable("vaccine") {VaccineCoverageScreen()}
+                    composable("world") {WorldScreen()}
+                    composable("compare") {CompareScreen()} 
                 }
             }
         }
@@ -58,20 +61,4 @@ class MainActivity : ComponentActivity() {
         Log.d(TAG, "onResume() called")
     }
 
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Covid19AppTheme {
-        Greeting("Android")
-    }
 }
