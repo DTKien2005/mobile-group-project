@@ -11,8 +11,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.covid19app.R
-import com.example.covid19app.symptrend.api.CovidApiService
-import com.example.covid19app.symptrend.api.HistoricalResponse
+import com.example.covid19app.features.vndashboard.data.api.CovidApiService
+import com.example.covid19app.features.vndashboard.data.api.HistoricalResponse
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -22,8 +22,6 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -61,10 +59,8 @@ class TrendsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         currentCall?.cancel()
         currentCall = null
-
         lineChart = null
         tvResult = null
     }
@@ -86,11 +82,9 @@ class TrendsFragment : Fragment() {
                 }
 
                 var nearest = sortedDateList.lastOrNull { it.first <= selMillis }
-
                 if (nearest == null) {
                     nearest = sortedDateList.firstOrNull { it.first >= selMillis }
                 }
-
                 if (nearest == null) {
                     tvResult?.text = "Không có dữ liệu nào để hiển thị"
                     return@DatePickerDialog
@@ -110,12 +104,7 @@ class TrendsFragment : Fragment() {
     }
 
     private fun fetchCovidData() {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://disease.sh/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val api = retrofit.create(CovidApiService::class.java)
+        val api = CovidApiService.create()
         val call = api.getVietnamTrends()
         currentCall = call
 
@@ -191,7 +180,7 @@ class TrendsFragment : Fragment() {
             xAxis.apply {
                 valueFormatter = IndexAxisValueFormatter(labels)
                 position = XAxis.XAxisPosition.BOTTOM
-                setDrawLabels(false) // ẩn nhãn X cho gọn
+                setDrawLabels(false)
                 setDrawGridLines(false)
             }
             axisLeft.apply {

@@ -1,52 +1,39 @@
 package com.example.covid19app.features.vndashboard.data.api
 
-import android.content.Context
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.covid19app.features.vndashboard.data.model.CovidStats
-import com.google.gson.Gson
-import org.json.JSONException
-import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
 
-object CovidApiService {
-    private const val URL = "https://disease.sh/v3/covid-19/countries/VN"
+// --- data models for historical endpoint (moved here so everything is in one place) ---
+data class HistoricalResponse(
+    val timeline: Timeline
+)
+data class Timeline(
+    val cases: Map<String, Int>,
+    val deaths: Map<String, Int>,
+    val recovered: Map<String, Int>
+)
 
-    // Function that call API
-    fun fetchCovidStats(context: Context, callback: CovidCallback) {
-        val queue = Volley.newRequestQueue(context)
+// --- unified Retrofit service ---
+interface CovidApiService {
 
-        val stringRequest = StringRequest(
-            Request.Method.GET,
-            URL,
-            { response ->
-                try {
-                    //                        // cách 1: parse JSON
-                    //                        val obj = JSONObject(response)
-                    //                        val country = obj.getString("country")
-                    //                        val cases = obj.getInt("cases")
-                    //                        val deaths = obj.getInt("deaths")
+    // Current stats for Vietnam (was Volley before)
+    @GET("v3/covid-19/countries/VN")
+    fun getVietnamStats(): Call<CovidStats>
 
-                    // Cách 2: Use Gson map to CovidStats
-                    val stats = Gson().fromJson<CovidStats?>(response, CovidStats::class.java)
+    // Historical data for Vietnam (last 30 days)
+    @GET("v3/covid-19/historical/Vietnam?lastdays=30")
+    fun getVietnamTrends(): Call<HistoricalResponse>
 
-                    callback.onSuccess(stats)
-                } catch (e: Exception) {
-                    callback.onError(e.message)
-                }
-            },
-            { error ->
-                callback.onError(error.message)
-            })
-
-        queue.add<String?>(stringRequest)
-    }
-
-    // Callback interface for Activity take the data
-    interface CovidCallback {
-        fun onSuccess(stats: CovidStats?)
-        fun onError(errorMessage: String?)
+    companion object {
+        fun create(): CovidApiService {
+            return Retrofit.Builder()
+                .baseUrl("https://disease.sh/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(CovidApiService::class.java)
+        }
     }
 }

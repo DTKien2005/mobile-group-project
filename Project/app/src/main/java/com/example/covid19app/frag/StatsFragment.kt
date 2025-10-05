@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment
 import com.example.covid19app.R
 import com.example.covid19app.features.vndashboard.data.api.CovidApiService
 import com.example.covid19app.features.vndashboard.data.model.CovidStats
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class StatsFragment : Fragment() {
 
@@ -29,25 +32,30 @@ class StatsFragment : Fragment() {
         val tvTests          = root.findViewById<TextView>(R.id.tvTests)
         val tvPopulation     = root.findViewById<TextView>(R.id.tvPopulation)
 
-        CovidApiService.fetchCovidStats(requireContext(), object : CovidApiService.CovidCallback {
+        // Call the merged Retrofit API
+        val api = CovidApiService.create()
+        api.getVietnamStats().enqueue(object : Callback<CovidStats> {
+            override fun onResponse(call: Call<CovidStats>, response: Response<CovidStats>) {
+                val stats = response.body()
+                if (!isAdded || stats == null) return
 
-            override fun onSuccess(stats: CovidStats?) {
-                tvUpdated.text        = "Updated: ${stats?.updated}"
-                tvCountry.text        = "Country: ${stats?.country}"
-                tvCases.text          = "Cases: ${stats?.cases}"
-                tvTodayCases.text     = "Today Cases: ${stats?.todayCases}"
-                tvDeaths.text         = "Deaths: ${stats?.deaths}"
-                tvTodayDeaths.text    = "Today Deaths: ${stats?.todayDeaths}"
-                tvRecovered.text      = "Recovered: ${stats?.recovered}"
-                tvTodayRecovered.text = "Today Recovered: ${stats?.todayRecovered}"
-                tvActive.text         = "Active: ${stats?.active}"
-                tvCritical.text       = "Critical: ${stats?.critical}"
-                tvTests.text          = "Tests: ${stats?.tests}"
-                tvPopulation.text     = "Population: ${stats?.population}"
+                tvUpdated.text        = "Updated: ${stats.updated}"
+                tvCountry.text        = "Country: ${stats.country}"
+                tvCases.text          = "Cases: ${stats.cases}"
+                tvTodayCases.text     = "Today Cases: ${stats.todayCases}"
+                tvDeaths.text         = "Deaths: ${stats.deaths}"
+                tvTodayDeaths.text    = "Today Deaths: ${stats.todayDeaths}"
+                tvRecovered.text      = "Recovered: ${stats.recovered}"
+                tvTodayRecovered.text = "Today Recovered: ${stats.todayRecovered}"
+                tvActive.text         = "Active: ${stats.active}"
+                tvCritical.text       = "Critical: ${stats.critical}"
+                tvTests.text          = "Tests: ${stats.tests}"
+                tvPopulation.text     = "Population: ${stats.population}"
             }
-            override fun onError(errorMessage: String?) {
-                Log.e("StatsFragment", "API error: $errorMessage")
-                tvCountry.text = "Error!!!"
+
+            override fun onFailure(call: Call<CovidStats>, t: Throwable) {
+                Log.e("StatsFragment", "API error", t)
+                if (isAdded) tvCountry.text = "Error!!!"
             }
         })
 
