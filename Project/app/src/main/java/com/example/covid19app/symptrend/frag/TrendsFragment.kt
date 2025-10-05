@@ -1,4 +1,4 @@
-package com.example.covid19app
+package com.example.covid19app.symptrend.frag
 
 import android.app.DatePickerDialog
 import android.graphics.Color
@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.covid19app.R
+import com.example.covid19app.symptrend.api.CovidApiService
+import com.example.covid19app.symptrend.api.HistoricalResponse
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -28,7 +31,7 @@ import java.util.Locale
 
 class TrendsFragment : Fragment() {
     private val TAG = "TrendsFragment"
-    
+
     private var lineChart: LineChart? = null
     private var tvResult: TextView? = null
 

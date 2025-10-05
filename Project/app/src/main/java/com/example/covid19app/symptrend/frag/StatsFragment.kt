@@ -1,4 +1,4 @@
-package com.example.covid19app.features.vndashboard.ui.view
+package com.example.covid19app.symptrend.frag
 
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.covid19app.R
 import com.example.covid19app.features.vndashboard.data.api.CovidApiService
-import com.example.covid19app.features.vndashboard.data.api.CovidApiService.CovidCallback
 import com.example.covid19app.features.vndashboard.data.model.CovidStats
 
 class StatsFragment : Fragment() {
@@ -30,7 +29,7 @@ class StatsFragment : Fragment() {
         val tvTests          = root.findViewById<TextView>(R.id.tvTests)
         val tvPopulation     = root.findViewById<TextView>(R.id.tvPopulation)
 
-        CovidApiService.fetchCovidStats(requireContext(), object : CovidCallback {
+        CovidApiService.fetchCovidStats(requireContext(), object : CovidApiService.CovidCallback {
 
             override fun onSuccess(stats: CovidStats?) {
                 tvUpdated.text        = "Updated: ${stats?.updated}"

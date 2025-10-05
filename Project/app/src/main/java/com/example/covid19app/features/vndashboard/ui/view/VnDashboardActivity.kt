@@ -2,13 +2,13 @@ package com.example.covid19app.features.vndashboard.ui.view
 
 // imports you need:
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.covid19app.R
-import com.example.covid19app.SymptomCheckerFragment
-import com.example.covid19app.TrendsFragment
+import com.example.covid19app.symptrend.frag.SymptomCheckerActivity
+import com.example.covid19app.symptrend.frag.StatsFragment
+import com.example.covid19app.symptrend.frag.TrendsFragment
 
 class VnDashboardActivity : AppCompatActivity() {
 
@@ -34,7 +34,7 @@ class VnDashboardActivity : AppCompatActivity() {
         // Symptom Checker
         findViewById<Button>(R.id.btnSymptomChecker).setOnClickListener {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SymptomCheckerFragment())
+                .replace(R.id.fragment_container, SymptomCheckerActivity())
                 .addToBackStack("symptom")
                 .commit()
         }

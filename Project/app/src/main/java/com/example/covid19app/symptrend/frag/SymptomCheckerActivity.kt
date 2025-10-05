@@ -1,5 +1,4 @@
-
-package com.example.covid19app
+package com.example.covid19app.symptrend.frag
 
 import android.content.Context
 import android.os.Bundle
@@ -11,12 +10,14 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.covid19app.R
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
-class SymptomCheckerFragment : Fragment() {
+class SymptomCheckerActivity : Fragment() {
 
-    private val TAG = "SymptomCheckerFragment"
+    private val TAG = "SymptomCheckerActivity"
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
