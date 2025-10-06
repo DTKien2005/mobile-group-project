@@ -37,11 +37,18 @@ interface CovidApiService {
         @Query("lastdays") lastDays: String = "all"
     ): Call<HistoricalResponse>
 
+    // Vietnam vaccine coverage
+    @GET("v3/covid-19/vaccine/coverage/countries/vietnam")
+    fun getVietnamVaccineCoverage(
+        @Query("lastdays") lastdays: String = "30",
+        @Query("fullData") fullData: Boolean = false
+    ): Call<VaccineResponseData>
+
     // Vietnam vaccine coverage: returns { country, timeline: { "1/1/21": 123, ... } }
     // https://disease.sh/v3/covid-19/vaccine/coverage/countries/vietnam?lastdays=30&fullData=false
     @GET("v3/covid-19/vaccine/coverage/countries/vietnam")
     fun getVaccineCoverage(
-        @Query("lastdays") lastDays: String,
+        @Query("lastdays") lastDays: String = "30",
         @Query("fullData") fullData: Boolean = false
     ): Call<VaccineResponseData>
 
@@ -49,7 +56,7 @@ interface CovidApiService {
     // https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=30&fullData=false
     @GET("v3/covid-19/vaccine/coverage")
     fun getWorldVaccineCoverage(
-        @Query("lastdays") lastDays: String,
+        @Query("lastdays") lastDays: String = "30",
         @Query("fullData") fullData: Boolean = false
     ): Call<Map<String, Long>>
 
