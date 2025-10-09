@@ -79,9 +79,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
-    // OkHttp logging (optional but handy)
-    implementation("com.squareup.okhttp3:logging-interceptor:5.1.0")
-
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

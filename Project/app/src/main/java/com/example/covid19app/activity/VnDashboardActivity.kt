@@ -61,7 +61,7 @@ class VnDashboardActivity : AppCompatActivity() {
 
         // --- Bell button: tap = daily 9:00, long-press = 60s test ---
         // (Preserved behavior)
-        findViewById<ImageButton>(R.id.btnNotify).apply {
+        findViewById<Button>(R.id.btnNotify).apply {
             setOnClickListener {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     requestNotifPermission.launch(Manifest.permission.POST_NOTIFICATIONS)

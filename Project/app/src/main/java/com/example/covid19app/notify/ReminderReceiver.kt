@@ -29,7 +29,7 @@ class ReminderReceiver : BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, NotificationScheduler.NOTIF_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher) // replace with your bell icon if you have one
             .setContentTitle(if (isTest) "Test notification" else "Daily update")
-            .setContentText(if (isTest) "This is your 60s test alarm" else "Wish u have a good health ❤")
+            .setContentText(if (isTest) "This is your 60s test alarm" else "Your 9:00 AM notification ✅")
             .setAutoCancel(true)
             .setContentIntent(contentPending)
             .build()
