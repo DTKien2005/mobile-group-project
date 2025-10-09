@@ -7,21 +7,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.covid19app.R
-import com.example.covid19app.api.RetrofitInstance
 import com.example.covid19app.data.VaccineResponseData
-import com.example.covid19app.offlinedata.FileCache
-import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.covid19app.viewmodel.VaccineCoverageViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class VaccineCoverageFragment : Fragment() {
 
-    private val gson by lazy { Gson() }
+    private val vaccineCoverageViewModel: VaccineCoverageViewModel by viewModels()
     private var tvVaccine: TextView? = null
 
     override fun onCreateView(
@@ -33,51 +29,26 @@ class VaccineCoverageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tvVaccine = view.findViewById(R.id.tvVaccine)
-        loadVietnamVaccineData()
-    }
 
-    private fun loadVietnamVaccineData() {
-        RetrofitInstance.api.getVietnamVaccineCoverage("30", false)
-            .enqueue(object : Callback<VaccineResponseData> {
-                override fun onResponse(
-                    call: Call<VaccineResponseData>,
-                    response: Response<VaccineResponseData>
-                ) {
-                    if (!isAdded) return
-                    if (response.isSuccessful && response.body() != null) {
-                        val data = response.body()!!
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            FileCache.writeText(requireContext(), "vn_vaccine.json", gson.toJson(data))
-                        }
-                        renderVaccine(data)
-                    } else {
-                        loadFromCache()
-                    }
-                }
+        // Observe the vaccine data
+        vaccineCoverageViewModel.vaccineData.observe(viewLifecycleOwner, Observer {
+            renderVaccine(it)
+        })
 
-                override fun onFailure(call: Call<VaccineResponseData>, t: Throwable) {
-                    if (!isAdded) return
-                    loadFromCache()
-                }
-            })
-    }
+        // Observe any error messages
+        vaccineCoverageViewModel.errorMessage.observe(viewLifecycleOwner, Observer { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        })
 
-    private fun loadFromCache() {
-        val cached = FileCache.readText(requireContext(), "vn_vaccine.json")
-        if (cached != null) {
-            val obj = gson.fromJson(cached, VaccineResponseData::class.java)
-            renderVaccine(obj)
-        } else {
-            tvVaccine?.text = "Offline & no cached data"
-            Toast.makeText(requireContext(), "Offline & no vaccine cache", Toast.LENGTH_SHORT).show()
-        }
+        // Load vaccine data
+        vaccineCoverageViewModel.loadVietnamVaccineData()
     }
 
     private fun renderVaccine(data: VaccineResponseData) {
         // entries -> Set, so convert to list and sort by date
         val inputFormats = listOf(
-            java.text.SimpleDateFormat("M/d/yy", java.util.Locale.ENGLISH),
-            java.text.SimpleDateFormat("MM/dd/yy", java.util.Locale.ENGLISH)
+            SimpleDateFormat("M/d/yy", Locale.ENGLISH),
+            SimpleDateFormat("MM/dd/yy", Locale.ENGLISH)
         )
 
         fun parse(d: String) = inputFormats.firstNotNullOfOrNull { f ->

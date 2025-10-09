@@ -2,28 +2,17 @@ package com.example.covid19app.data
 
 import com.google.gson.annotations.SerializedName
 
-class CovidStatsData // Constructor
-    (// Getters and Setters
-    @field:SerializedName("updated") var updated: Long,
-    @field:SerializedName(
-        "country"
-    ) var country: String?,
-    @field:SerializedName("cases") var cases: Int,
-    @field:SerializedName(
-        "todayCases"
-    ) var todayCases: Int,
-    @field:SerializedName("deaths") var deaths: Int,
-    @field:SerializedName("todayDeaths") var todayDeaths: Int,
-    @field:SerializedName(
-        "recovered"
-    ) var recovered: Int,
-    @field:SerializedName("todayRecovered") var todayRecovered: Int,
-    @field:SerializedName(
-        "active"
-    ) var active: Int,
-    @field:SerializedName("critical") var critical: Int,
-    @field:SerializedName(
-        "tests"
-    ) var tests: Int,
-    @field:SerializedName("population") var population: Int
+data class CovidStatsData(
+    @SerializedName("updated") val updated: Long,
+    @SerializedName("country") val country: String?,
+    @SerializedName("cases") val cases: Int,
+    @SerializedName("todayCases") val todayCases: Int,
+    @SerializedName("deaths") val deaths: Int,
+    @SerializedName("todayDeaths") val todayDeaths: Int,
+    @SerializedName("recovered") val recovered: Int,
+    @SerializedName("todayRecovered") val todayRecovered: Int,
+    @SerializedName("active") val active: Int,
+    @SerializedName("critical") val critical: Int,
+    @SerializedName("tests") val tests: Int,
+    @SerializedName("population") val population: Int
 )
