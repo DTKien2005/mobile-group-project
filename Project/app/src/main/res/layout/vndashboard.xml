@@ -9,10 +9,12 @@
     <!-- Top AppBar -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="62dp"
         android:background="@color/purple_700"
         android:gravity="center_vertical"
-        android:paddingStart="16dp">
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -20,19 +22,20 @@
             android:text="Covid Dashboard"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
-        <!-- NEW: Notification (bell) button -->
-        <ImageButton
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
             android:id="@+id/btnNotify"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginEnd="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/app_name"
-            android:padding="6dp"
-            android:src="@android:drawable/ic_dialog_info"
-            app:tint="@android:color/white" />
+            android:drawableTop="@drawable/ic_notification"/>
     </LinearLayout>
 
     <!-- Row of Navigation Buttons -->
@@ -48,6 +51,8 @@
             android:layout_height="match_parent"
             android:layout_weight="0.7"
             android:text="Home"
+            android:background="@drawable/button_background_selector"
+            android:textColor="@color/button_text_color_selector"
             android:drawableTop="@drawable/ic_home"
             android:drawablePadding="4dp"
             android:gravity="center"/>
@@ -57,6 +62,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
+            android:background="@drawable/button_background_selector"
+            android:textColor="@color/button_text_color_selector"
             android:drawableTop="@drawable/ic_health"
             android:drawablePadding="4dp"
             android:gravity="center"
@@ -67,6 +74,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
+            android:background="@drawable/button_background_selector"
+            android:textColor="@color/button_text_color_selector"
             android:text="Trends"
             android:drawableTop="@drawable/ic_trend"
             android:drawablePadding="4dp"
@@ -78,6 +87,8 @@
             android:layout_height="match_parent"
             android:layout_weight="0.7"
             android:text="Vietnam Vaccine"
+            android:background="@drawable/button_background_selector"
+            android:textColor="@color/button_text_color_selector"
             android:drawableTop="@drawable/ic_flag_vn"
             android:drawablePadding="4dp"
             android:gravity="center"/>
@@ -87,6 +98,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
+            android:background="@drawable/button_background_selector"
+            android:textColor="@color/button_text_color_selector"
             android:text="World Vaccine"
             android:drawableTop="@drawable/ic_public"
             android:drawablePadding="4dp"
@@ -97,6 +110,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
+            android:background="@drawable/button_background_selector"
+            android:textColor="@color/button_text_color_selector"
             android:text="Vietnam Vs World"
             android:drawableTop="@drawable/ic_compare"
             android:drawablePadding="4dp"
@@ -107,6 +122,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
+            android:background="@drawable/button_background_selector"
+            android:textColor="@color/button_text_color_selector"
             android:text="Search"
             android:drawableTop="@drawable/ic_search"
             android:drawablePadding="4dp"
