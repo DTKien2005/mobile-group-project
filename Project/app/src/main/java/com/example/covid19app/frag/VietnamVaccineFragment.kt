@@ -11,13 +11,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.covid19app.R
 import com.example.covid19app.data.VaccineResponseData
-import com.example.covid19app.viewmodel.VaccineCoverageViewModel
+import com.example.covid19app.viewmodel.VietnamVaccineViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class VaccineCoverageFragment : Fragment() {
+class VietnamVaccineFragment : Fragment() {
 
-    private val vaccineCoverageViewModel: VaccineCoverageViewModel by viewModels()
+    private val vietnamVaccineViewModel: VietnamVaccineViewModel by viewModels()
     private var tvVaccine: TextView? = null
 
     override fun onCreateView(
@@ -31,17 +31,17 @@ class VaccineCoverageFragment : Fragment() {
         tvVaccine = view.findViewById(R.id.tvVaccine)
 
         // Observe the vaccine data
-        vaccineCoverageViewModel.vaccineData.observe(viewLifecycleOwner, Observer {
+        vietnamVaccineViewModel.vaccineData.observe(viewLifecycleOwner, Observer {
             renderVaccine(it)
         })
 
         // Observe any error messages
-        vaccineCoverageViewModel.errorMessage.observe(viewLifecycleOwner, Observer { message ->
+        vietnamVaccineViewModel.errorMessage.observe(viewLifecycleOwner, Observer { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         })
 
         // Load vaccine data
-        vaccineCoverageViewModel.loadVietnamVaccineData()
+        vietnamVaccineViewModel.loadVietnamVaccineData()
     }
 
     private fun renderVaccine(data: VaccineResponseData) {

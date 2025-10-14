@@ -4,11 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.covid19app.R
-import com.example.covid19app.offlinedata.DataSeeder
-import kotlinx.coroutines.launch
-
+import android.view.View
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
@@ -16,24 +13,39 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate called")
-        setContentView(R.layout.vndashboard)
+        setContentView(R.layout.activity_home)
 
-        // Seed offline data on first launch
-        lifecycleScope.launch {
-            try {
-                Log.d(TAG, "Starting data seeding...")
-                DataSeeder.ensureSeeded(this@MainActivity)
-                Log.d(TAG, "Data seeding complete.")
-            } catch (e: Exception) {
-                Log.e(TAG, "Data seeding failed: ${e.message}", e)
-            }
-
-            // Launch dashboard once seeding completes (first run) or immediately (subsequent runs)
-            val intent = Intent(this@MainActivity, VnDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
-            Log.d(TAG, "Dashboard started.")
+        // Set up button listeners to navigate to VnDashboardActivity
+        findViewById<View>(R.id.btnCountrySearch).setOnClickListener {
+            navigateToDashboardActivity(6) // CountrySearchFragment is at index 6
         }
+
+        findViewById<View>(R.id.btnVaccineCoverage).setOnClickListener {
+            navigateToDashboardActivity(3) // VaccineCoverageFragment is at index 3
+        }
+
+        findViewById<View>(R.id.btnStats).setOnClickListener {
+            navigateToDashboardActivity(0) // StatsFragment is at index 0
+        }
+
+        findViewById<View>(R.id.btnTrends).setOnClickListener {
+            navigateToDashboardActivity(2) // TrendsFragment is at index 2
+        }
+
+        findViewById<View>(R.id.btnWorldVaccine).setOnClickListener {
+            navigateToDashboardActivity(4) // WorldVaccineFragment is at index 4
+        }
+
+        findViewById<View>(R.id.btnSymptomChecker).setOnClickListener {
+            navigateToDashboardActivity(1) // SymptomCheckerActivity is at index 1
+        }
+    }
+
+    // Start the VnDashboardActivity with the selected fragment index
+    private fun navigateToDashboardActivity(fragmentIndex: Int) {
+        val intent = Intent(this, CovidActivity::class.java)
+        intent.putExtra("FRAGMENT_INDEX", fragmentIndex) // Pass the fragment index
+        startActivity(intent)
     }
 
     override fun onStart() {

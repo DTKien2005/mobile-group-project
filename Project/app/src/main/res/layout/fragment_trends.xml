@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="Covid 19 Trends in VietNam (VN)"
+            android:background="@color/white"
             app:titleCentered="true" />
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout

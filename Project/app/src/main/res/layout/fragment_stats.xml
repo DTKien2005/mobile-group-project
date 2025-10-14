@@ -17,7 +17,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/white"
                     android:titleTextColor="@android:color/black"
-                    app:title="CovidDashboard"
+                    app:title="Vietnam's Stats"
                     app:titleCentered="true"
                     app:navigationIconTint="@android:color/black" />
         </com.google.android.material.appbar.AppBarLayout>

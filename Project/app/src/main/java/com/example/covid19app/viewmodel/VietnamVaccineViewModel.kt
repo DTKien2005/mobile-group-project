@@ -15,7 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class VaccineCoverageViewModel(application: Application) : AndroidViewModel(application) {
+class VietnamVaccineViewModel(application: Application) : AndroidViewModel(application) {
 
     private val gson = Gson()
     private val _vaccineData = MutableLiveData<VaccineResponseData>()

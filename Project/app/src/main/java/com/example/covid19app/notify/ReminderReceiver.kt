@@ -6,15 +6,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.example.covid19app.notify.NotificationScheduler
 import com.example.covid19app.R
-import com.example.covid19app.activity.VnDashboardActivity
+import com.example.covid19app.activity.CovidActivity
 
 class ReminderReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         // Tap -> open the dashboard
-        val openIntent = Intent(context, VnDashboardActivity::class.java)
+        val openIntent = Intent(context, CovidActivity::class.java)
         val contentPending = PendingIntent.getActivity(
             context,
             2001,
