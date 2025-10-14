@@ -211,12 +211,20 @@ class TrendsFragment : Fragment() {
             data = LineData(LineDataSet(entries, "New Cases").apply {
                 color = Color.BLUE; lineWidth = 2f; setDrawCircles(false); setDrawValues(false)
             })
+
+            setPinchZoom(true)
+            isDragEnabled = true
+            setScaleEnabled(true)
+            isAutoScaleMinMaxEnabled = true
+
             xAxis.apply {
                 valueFormatter = IndexAxisValueFormatter(labels)
                 position = XAxis.XAxisPosition.BOTTOM
                 setDrawLabels(true); setLabelCount(6, true); setDrawGridLines(false)
             }
-            axisLeft.apply { axisMinimum = 0f; setDrawGridLines(true) }
+            axisLeft.apply {
+                setDrawGridLines(true)
+            }
             axisRight.isEnabled = false
             description.isEnabled = false; legend.isEnabled = false
             invalidate()
@@ -237,11 +245,24 @@ class TrendsFragment : Fragment() {
         val end = (idx + halfWindowDays).coerceAtMost(dailyData.lastIndex)
         val visibleCount = (end - start + 1).coerceAtLeast(1)
 
+        // Y-window based on visible X-range
+        val windowVals = dailyData.subList(start, end + 1).map { it.second.toFloat() }
+        val minY = windowVals.minOrNull() ?: 0f
+        val maxY = windowVals.maxOrNull() ?: 0f
+        val pad = ((maxY - minY) * 0.1f).coerceAtLeast(1f)
+        chart.axisLeft.axisMinimum = (minY - pad).coerceAtMost(minY)   // little breathing room
+        chart.axisLeft.axisMaximum = (maxY + pad)
+
+        // Keep your X zoom & motion
         chart.setVisibleXRangeMinimum(visibleCount.toFloat())
         chart.setVisibleXRangeMaximum(visibleCount.toFloat())
         chart.moveViewToX(start.toFloat())
+
+        // Center and refresh
         val y = dailyData[idx].second.toFloat()
         chart.centerViewToAnimated(idx.toFloat(), y, chart.axisLeft.axisDependency, 400)
         chart.highlightValue(idx.toFloat(), 0, false)
+        chart.notifyDataSetChanged()
+        chart.invalidate()
     }
 }
