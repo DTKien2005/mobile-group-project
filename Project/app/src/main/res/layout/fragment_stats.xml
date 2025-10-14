@@ -1,110 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <LinearLayout
+        <!-- App Bar -->
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:theme="@style/ThemeOverlay.MaterialComponents.Light">
 
-                <TextView
-                    android:id="@+id/tvUpdated"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Updated"
-                    android:textSize="16sp" />
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/white"
+                    android:titleTextColor="@android:color/black"
+                    app:title="CovidDashboard"
+                    app:titleCentered="true"
+                    app:navigationIconTint="@android:color/black" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-                <TextView
-                    android:id="@+id/tvCountry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Country"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+        <!-- Scroll Contents -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <TextView
-                    android:id="@+id/tvCases"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Cases" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/tvTodayCases"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Today Cases" />
+                        <TextView
+                            android:id="@+id/tvUpdated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Updated:"
+                            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/tvDeaths"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Deaths" />
+                        <TextView
+                            android:id="@+id/tvCountry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Country:"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvTodayDeaths"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Today Deaths" />
+                        <TextView
+                            android:id="@+id/tvCases"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Cases:"
+                            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/tvRecovered"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Recovered" />
+                        <TextView
+                            android:id="@+id/tvTodayCases"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Today Cases:"
+                            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/tvTodayRecovered"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Today Recovered" />
+                        <TextView
+                            android:id="@+id/tvDeaths"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Deaths:"
+                            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/tvActive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Active" />
+                        <TextView
+                            android:id="@+id/tvTodayDeaths"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Today Deaths:"
+                            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/tvCritical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Critical" />
+                        <TextView
+                            android:id="@+id/tvRecovered"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Recovered:"
+                            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/tvTests"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:padding="4dp"
-                    android:text="Tests" />
+                        <TextView
+                            android:id="@+id/tvTodayRecovered"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Today Recovered:"
+                            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/tvPopulation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:text="Population" />
-        </LinearLayout>
-</ScrollView>
+                        <TextView
+                            android:id="@+id/tvActive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Active:"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/tvCritical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Critical:"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/tvTests"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:padding="4dp"
+                            android:text="Tests:"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/tvPopulation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="4dp"
+                            android:text="Population:"
+                            android:textSize="20sp" />
+
+                </LinearLayout>
+        </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

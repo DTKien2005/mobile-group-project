@@ -66,7 +66,15 @@ class StatsFragment : Fragment() {
         tvActive: TextView, tvCritical: TextView, tvTests: TextView, tvPopulation: TextView,
         stats: CovidStatsData
     ) {
-        tvUpdated.text = "Updated: ${stats.updated}"
+        // 🔹 Convert times to date
+        val formattedDate = try {
+            val sdf = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
+            val date = java.util.Date(stats.updated)
+            sdf.format(date)
+        } catch (e: Exception) {
+            "Unknown"
+        }
+        tvUpdated.text = "Updated: $formattedDate"
         tvCountry.text = "Country: ${stats.country}"
         tvCases.text = "Cases: ${stats.cases}"
         tvTodayCases.text = "Today Cases: ${stats.todayCases}"

@@ -23,13 +23,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Date selection button -->
-        <Button
-            android:id="@+id/btnSelectDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Date" />
-
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
