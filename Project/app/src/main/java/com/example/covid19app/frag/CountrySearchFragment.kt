@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covid19app.R
-import com.example.covid19app.activity.CountryAdapter
+import com.example.covid19app.adapter.CountryAdapter
 import com.example.covid19app.api.RetrofitInstance
 import com.example.covid19app.data.Country
 import com.example.covid19app.offlinedata.FileCache

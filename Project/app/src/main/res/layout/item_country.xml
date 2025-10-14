@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="#000000"
-            android:text="Tên quốc gia" />
+            android:text="Country name" />
 
         <TextView
             android:id="@+id/casesTextView"
@@ -31,6 +31,6 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="#666666"
-            android:text="Số ca nhiễm: 0" />
+            android:text="Cases: 0" />
     </LinearLayout>
 </LinearLayout>
