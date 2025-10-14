@@ -1,4 +1,5 @@
 package com.example.covid19app.frag
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,19 +20,44 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.appcompat.widget.SearchView // Correct import for SearchView
 
 class CountrySearchFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CountryAdapter
+    private lateinit var searchView: SearchView
+
+    // Public method to get the searchView
+    fun getSearchView(): SearchView {
+        return searchView
+    }
     private val gson by lazy { Gson() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_searchcountry, container, false)
+
         recyclerView = v.findViewById(R.id.recyclerView)
+        searchView = v.findViewById(R.id.searchView) // Correctly reference SearchView
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = CountryAdapter(emptyList())
         recyclerView.adapter = adapter
+
+        // Set up the search view to filter country names
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Optional: handle query submission
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    adapter.filter(it) // Call filter method on adapter
+                }
+                return true
+            }
+        })
 
         fetchCountries()
         return v
@@ -70,6 +96,5 @@ class CountrySearchFragment : Fragment() {
     private fun showCountries(list: List<Country>) {
         adapter = CountryAdapter(list)
         recyclerView.adapter = adapter
-        // Keep your existing SearchView filtering logic if you have one
     }
 }

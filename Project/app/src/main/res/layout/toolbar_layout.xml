@@ -1,0 +1,33 @@
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@color/white"
+    android:title="@string/app_name"
+    android:titleTextColor="@android:color/holo_blue_dark"
+    android:gravity="center_vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <!-- Notification Button -->
+    <ImageView
+        android:id="@+id/btnNotify"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_notification"
+        android:layout_gravity="end"
+        android:layout_marginEnd="1dp"
+        android:padding="8dp"
+        app:tint="@android:color/holo_blue_dark" />
+    <ImageView
+        android:id="@+id/btnSearch"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_search"
+        android:layout_gravity="end"
+        android:layout_marginEnd="15dp"
+        android:padding="8dp"
+        app:tint="@android:color/holo_blue_dark" />
+</androidx.appcompat.widget.Toolbar>

@@ -16,29 +16,30 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         // Set up button listeners to navigate to VnDashboardActivity
-        findViewById<View>(R.id.btnCountrySearch).setOnClickListener {
-            navigateToDashboardActivity(6) // CountrySearchFragment is at index 6
-        }
-
-        findViewById<View>(R.id.btnVaccineCoverage).setOnClickListener {
-            navigateToDashboardActivity(3) // VaccineCoverageFragment is at index 3
-        }
-
         findViewById<View>(R.id.btnStats).setOnClickListener {
             navigateToDashboardActivity(0) // StatsFragment is at index 0
+        }
+
+        findViewById<View>(R.id.btnSymptomChecker).setOnClickListener {
+            navigateToDashboardActivity(1) // SymptomCheckerActivity is at index 1
         }
 
         findViewById<View>(R.id.btnTrends).setOnClickListener {
             navigateToDashboardActivity(2) // TrendsFragment is at index 2
         }
 
+        findViewById<View>(R.id.btnVaccineCoverage).setOnClickListener {
+            navigateToDashboardActivity(3) // VaccineCoverageFragment is at index 3
+        }
+
         findViewById<View>(R.id.btnWorldVaccine).setOnClickListener {
             navigateToDashboardActivity(4) // WorldVaccineFragment is at index 4
         }
 
-        findViewById<View>(R.id.btnSymptomChecker).setOnClickListener {
-            navigateToDashboardActivity(1) // SymptomCheckerActivity is at index 1
+        findViewById<View>(R.id.btnSearch).setOnClickListener {
+            navigateToDashboardActivity(6) // CountrySearchFragment is at index 6
         }
+
     }
 
     // Start the VnDashboardActivity with the selected fragment index

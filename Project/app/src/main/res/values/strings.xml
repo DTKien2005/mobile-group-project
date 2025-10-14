@@ -1,5 +1,13 @@
 <resources>
-    <string name="app_name">Covid19App</string>
+    <string name="app_name">Covid19Stats</string>
     <string name="title_trends">Trends</string>
     <string name="title_symptom">Symptom</string>
+    <string name="covid_19_stats">Covid 19 Stats</string>
+    <string name="stats">Stats</string>
+    <string name="trends">Trends</string>
+    <string name="symptom_checker">Symptom Checker</string>
+    <string name="vietnam_vaccine">Vietnam Vaccine</string>
+    <string name="world_vaccine">World Vaccine</string>
+    <string name="vietnam_vs_world">Vietnam vs World</string>
+    <string name="error">Error</string>
 </resources>

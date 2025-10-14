@@ -1,134 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@android:color/white">
 
-    <!-- Top AppBar -->
-    <LinearLayout
+    <!-- Include the AppBar layout (Toolbar) -->
+    <include
+        layout="@layout/toolbar_layout" />
+
+    <!-- Bottom Navigation Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:background="@color/purple_700"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:itemIconTint="@android:color/holo_blue_dark"
+        app:itemTextAppearance="@style/TextAppearance.AppCompat.Small"
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/bottom_nav_menu" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Covid 19 Stats"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btnNotify"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/app_name"
-            android:drawableTop="@drawable/ic_notification"/>
-    </LinearLayout>
-
-    <!-- Row of Navigation Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:weightSum="5">
-
-        <Button
-            android:id="@+id/btnHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:text="Home"
-            android:background="@drawable/button_background_selector"
-            android:textColor="@color/button_text_color_selector"
-            android:drawableTop="@drawable/ic_stats"
-            android:drawablePadding="4dp"
-            android:gravity="center"/>
-
-        <Button
-            android:id="@+id/btnSymptomChecker"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:background="@drawable/button_background_selector"
-            android:textColor="@color/button_text_color_selector"
-            android:drawableTop="@drawable/ic_symptom"
-            android:drawablePadding="4dp"
-            android:gravity="center"
-            android:text="Symptom Checker" />
-
-        <Button
-            android:id="@+id/btnTrend"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:background="@drawable/button_background_selector"
-            android:textColor="@color/button_text_color_selector"
-            android:text="Trends"
-            android:drawableTop="@drawable/ic_trend"
-            android:drawablePadding="4dp"
-            android:gravity="center" />
-
-        <Button
-            android:id="@+id/btnVnVac"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:text="Vietnam Vaccine"
-            android:background="@drawable/button_background_selector"
-            android:textColor="@color/button_text_color_selector"
-            android:drawableTop="@drawable/ic_flag_vn"
-            android:drawablePadding="4dp"
-            android:gravity="center"/>
-
-        <Button
-            android:id="@+id/btnWorldVac"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:background="@drawable/button_background_selector"
-            android:textColor="@color/button_text_color_selector"
-            android:text="World Vaccine"
-            android:drawableTop="@drawable/ic_public"
-            android:drawablePadding="4dp"
-            android:gravity="center" />
-
-        <Button
-            android:id="@+id/btnVnVsWorld"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:background="@drawable/button_background_selector"
-            android:textColor="@color/button_text_color_selector"
-            android:text="Vietnam Vs World"
-            android:drawableTop="@drawable/ic_compare"
-            android:drawablePadding="4dp"
-            android:gravity="center" />
-
-        <Button
-            android:id="@+id/btnSearch"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:background="@drawable/button_background_selector"
-            android:textColor="@color/button_text_color_selector"
-            android:text="Search"
-            android:drawableTop="@drawable/ic_search"
-            android:drawablePadding="4dp"
-            android:gravity="center" />
-    </LinearLayout>
+    <!-- Main Content: ViewPager for content switching -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

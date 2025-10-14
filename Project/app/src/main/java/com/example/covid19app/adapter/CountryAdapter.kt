@@ -26,12 +26,11 @@ class CountryAdapter(private val originalList: List<Country>) :
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         val currentCountry = filteredList[position]
         holder.countryNameTextView.text = currentCountry.country
-        holder.casesTextView.text = "Số ca nhiễm: ${currentCountry.cases}"
+        holder.casesTextView.text = "Cases: ${currentCountry.cases}"
     }
 
     override fun getItemCount(): Int = filteredList.size
 
-    // ✅ Hàm lọc theo từ khóa
     fun filter(query: String) {
         filteredList = if (query.isEmpty()) {
             originalList
