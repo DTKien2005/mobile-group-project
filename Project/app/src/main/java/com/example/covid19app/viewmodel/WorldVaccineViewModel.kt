@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.covid19app.api.RetrofitInstance
 import com.example.covid19app.offlinedata.FileCache
-import com.example.covid19app.data.WorldData
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

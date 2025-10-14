@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.appcompat.widget.SearchView // Correct import for SearchView
+import androidx.appcompat.widget.SearchView
 
 class CountrySearchFragment : Fragment() {
 

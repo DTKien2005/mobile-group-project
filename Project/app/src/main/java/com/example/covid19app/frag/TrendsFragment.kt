@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.math.abs
 
 class TrendsFragment : Fragment() {
     private val TAG = "TrendsFragment"

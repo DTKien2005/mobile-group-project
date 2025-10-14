@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.covid19app.R
 import android.view.View
+
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
