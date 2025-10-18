@@ -5,7 +5,7 @@ Topic: 14- COVID-19 stats
 
 Group Member:
 
-Đỗ Trung Kiên - 23BI14238
+Đỗ Trung Kiên - 23BI14238 (Leader)
 
 Ngô Hoàng Khánh Duy - 23BI14131
 
